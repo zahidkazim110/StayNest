@@ -1,6 +1,7 @@
-﻿import 'dart:math' as math;
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+
 import '../../models/hostel.dart';
 
 const Color mapBlue = Color(0xFF315BE8);
@@ -27,44 +28,51 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
   Set<String> selectedFacilities = {};
 
   final List<Hostel> hostels = [
-  const Hostel(
-    name: 'University Living Hostel',
-    area: 'H-13, Islamabad',
-    monthlyRent: 18000,
-    distanceKm: 0.8,
-    rating: 4.8,
-    roomTypes: {'Single', 'Double', 'Shared'},
-    facilities: {'Wi-Fi', 'Laundry'},
-  ),
-  const Hostel(
-    name: 'Student Comfort Residence',
-    area: 'G-10, Islamabad',
-    monthlyRent: 15000,
-    distanceKm: 1.4,
-    rating: 4.6,
-    roomTypes: {'Double', 'Shared'},
-    facilities: {'Wi-Fi', 'Mess'},
-  ),
-  const Hostel(
-    name: 'Campus View Hostel',
-    area: 'Satellite Town, Rawalpindi',
-    monthlyRent: 12000,
-    distanceKm: 2.1,
-    rating: 4.7,
-    roomTypes: {'Single', 'Shared'},
-    facilities: {'Wi-Fi', 'Air Conditioning'},
-  ),
-];
+    const Hostel(
+      name: 'University Living Hostel',
+      area: 'H-13, Islamabad',
+      monthlyRent: 18000,
+      distanceKm: 0.8,
+      rating: 4.8,
+      roomTypes: {'Single', 'Double', 'Shared'},
+      facilities: {'Wi-Fi', 'Laundry'},
+    ),
+    const Hostel(
+      name: 'Student Comfort Residence',
+      area: 'G-10, Islamabad',
+      monthlyRent: 15000,
+      distanceKm: 1.4,
+      rating: 4.6,
+      roomTypes: {'Double', 'Shared'},
+      facilities: {'Wi-Fi', 'Mess'},
+    ),
+    const Hostel(
+      name: 'Campus View Hostel',
+      area: 'Satellite Town, Rawalpindi',
+      monthlyRent: 12000,
+      distanceKm: 2.1,
+      rating: 4.7,
+      roomTypes: {'Single', 'Shared'},
+      facilities: {'Wi-Fi', 'Air Conditioning'},
+    ),
+  ];
   List<Hostel> get filteredHostels {
     return hostels.where((hostel) {
       final matchesBudget =
           hostel.monthlyRent >= budgetRange.start &&
           hostel.monthlyRent <= budgetRange.end;
 
-      final matchesRoomType = selectedRoomType == 'Any' ||
+      final matchesRoomType =
+          selectedRoomType == 'Any' ||
           hostel.roomTypes.contains(selectedRoomType);
 
-      return matchesBudget && matchesRoomType;
+      final matchesFacilities =
+          selectedFacilities.isEmpty ||
+          selectedFacilities.every(
+            (facility) => hostel.facilities.contains(facility),
+          );
+
+      return matchesBudget && matchesRoomType && matchesFacilities;
     }).toList();
   }
 
@@ -257,20 +265,23 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
                       ...['Wi-Fi', 'Air Conditioning', 'Laundry', 'Mess'].map((
                         facility,
                       ) {
-                        return CheckboxListTile(
-                          contentPadding: EdgeInsets.zero,
-                          activeColor: mapBlue,
-                          title: Text(facility),
-                          value: selectedFacilities.contains(facility),
-                          onChanged: (value) {
-                            setModalState(() {
-                              if (value == true) {
-                                selectedFacilities.add(facility);
-                              } else {
-                                selectedFacilities.remove(facility);
-                              }
-                            });
-                          },
+                        return Material(
+                          color: Colors.transparent,
+                          child: CheckboxListTile(
+                            contentPadding: EdgeInsets.zero,
+                            activeColor: mapBlue,
+                            title: Text(facility),
+                            value: selectedFacilities.contains(facility),
+                            onChanged: (value) {
+                              setModalState(() {
+                                if (value == true) {
+                                  selectedFacilities.add(facility);
+                                } else {
+                                  selectedFacilities.remove(facility);
+                                }
+                              });
+                            },
+                          ),
                         );
                       }),
 
@@ -435,21 +446,24 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
             ),
 
             // Hostel markers
-            ...List.generate(math.min(markerPositions.length, filteredHostels.length), (index) {
-              final position = markerPositions[index];
+            ...List.generate(
+              math.min(markerPositions.length, filteredHostels.length),
+              (index) {
+                final position = markerPositions[index];
 
-              return Positioned(
-                left: position.dx - 22,
-                top: position.dy - 30,
-                child: GestureDetector(
-                  onTap: () => selectMarker(index),
-                  child: HostelMarker(
-                    active: selectedHostel == index,
-                    value: radar.value,
+                return Positioned(
+                  left: position.dx - 22,
+                  top: position.dy - 30,
+                  child: GestureDetector(
+                    onTap: () => selectMarker(index),
+                    child: HostelMarker(
+                      active: selectedHostel == index,
+                      value: radar.value,
+                    ),
                   ),
-                ),
-              );
-            }),
+                );
+              },
+            ),
 
             // Central location pin
             Positioned(
@@ -793,7 +807,9 @@ class HostelMarker extends StatelessWidget {
           border: Border.all(color: Colors.white, width: 3),
           boxShadow: [
             BoxShadow(
-              color: (active ? Colors.orange : Colors.blue).withValues(alpha: .5),
+              color: (active ? Colors.orange : Colors.blue).withValues(
+                alpha: .5,
+              ),
               blurRadius: active ? 22 : 12,
               spreadRadius: active ? 3 : 0,
             ),
@@ -943,6 +959,3 @@ class MapPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant MapPainter oldDelegate) => true;
 }
-
-
-

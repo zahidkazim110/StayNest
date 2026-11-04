@@ -56,3 +56,13 @@ app.*.map.json
 
 # Local backup files
 *.bak
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Local backup files
+*.bak
