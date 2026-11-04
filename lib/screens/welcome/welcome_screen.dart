@@ -1,10 +1,10 @@
-﻿import 'dart:math' as math;
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
 import '../../components/buttons/primary_button.dart';
 import '../../core/theme/app_colors.dart';
-import '../discovery/discovery_screen.dart';
+import '../authentication/login_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -75,7 +75,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
       PageRouteBuilder(
         transitionDuration: const Duration(milliseconds: 1100),
         pageBuilder: (context, animation, secondaryAnimation) {
-          return const DiscoveryScreen();
+          return const LoginScreen();
         },
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           final curved = CurvedAnimation(
