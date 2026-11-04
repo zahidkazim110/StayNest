@@ -22,6 +22,10 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
   String selectedArea = 'Islamabad';
   int selectedHostel = 0;
 
+  RangeValues budgetRange = const RangeValues(8000, 30000);
+  String selectedRoomType = 'Any';
+  Set<String> selectedFacilities = {};
+
   final List<Map<String, String>> hostels = [
     {
       'name': 'University Living Hostel',
@@ -117,6 +121,203 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
     );
   }
 
+  // FILTER BOTTOM SHEET
+  void _showFilters() {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Container(
+              decoration: const BoxDecoration(
+                color: Color(0xFFF8FAFF),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+              ),
+              padding: EdgeInsets.fromLTRB(
+                22,
+                12,
+                22,
+                MediaQuery.of(context).viewInsets.bottom + 24,
+              ),
+              child: SafeArea(
+                top: false,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Center(
+                        child: Container(
+                          height: 5,
+                          width: 42,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade300,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 22),
+
+                      Row(
+                        children: [
+                          const Expanded(
+                            child: Text(
+                              'Filter Hostels',
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: mapNavy,
+                              ),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setModalState(() {
+                                budgetRange = const RangeValues(8000, 30000);
+                                selectedRoomType = 'Any';
+                                selectedFacilities.clear();
+                              });
+                            },
+                            child: const Text('Reset'),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 22),
+
+                      const Text(
+                        'Monthly Budget',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: mapNavy,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+
+                      Text(
+                        'PKR ${budgetRange.start.round()} - '
+                        'PKR ${budgetRange.end.round()}',
+                        style: const TextStyle(
+                          color: mapBlue,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      RangeSlider(
+                        values: budgetRange,
+                        min: 5000,
+                        max: 50000,
+                        divisions: 45,
+                        activeColor: mapBlue,
+                        onChanged: (value) {
+                          setModalState(() {
+                            budgetRange = value;
+                          });
+                        },
+                      ),
+
+                      const SizedBox(height: 18),
+
+                      const Text(
+                        'Room Type',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: mapNavy,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+
+                      Wrap(
+                        spacing: 8,
+                        children: ['Any', 'Single', 'Double', 'Shared'].map((
+                          type,
+                        ) {
+                          return ChoiceChip(
+                            label: Text(type),
+                            selected: selectedRoomType == type,
+                            selectedColor: const Color(0xFFDCE5FF),
+                            onSelected: (_) {
+                              setModalState(() {
+                                selectedRoomType = type;
+                              });
+                            },
+                          );
+                        }).toList(),
+                      ),
+
+                      const SizedBox(height: 22),
+
+                      const Text(
+                        'Facilities',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: mapNavy,
+                        ),
+                      ),
+
+                      ...['Wi-Fi', 'Air Conditioning', 'Laundry', 'Mess'].map((
+                        facility,
+                      ) {
+                        return CheckboxListTile(
+                          contentPadding: EdgeInsets.zero,
+                          activeColor: mapBlue,
+                          title: Text(facility),
+                          value: selectedFacilities.contains(facility),
+                          onChanged: (value) {
+                            setModalState(() {
+                              if (value == true) {
+                                selectedFacilities.add(facility);
+                              } else {
+                                selectedFacilities.remove(facility);
+                              }
+                            });
+                          },
+                        );
+                      }),
+
+                      const SizedBox(height: 18),
+
+                      SizedBox(
+                        width: double.infinity,
+                        height: 54,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: mapBlue,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                          onPressed: () {
+                            setState(() {});
+                            Navigator.pop(sheetContext);
+                          },
+                          child: const Text(
+                            'Apply Filters',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // HEADER
   Widget _header() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 18, 20, 15),
@@ -156,7 +357,8 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: _showFilters,
+            tooltip: 'Filter hostels',
             icon: const Icon(Icons.tune_rounded, color: Colors.white),
           ),
         ],
@@ -164,6 +366,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
     );
   }
 
+  // ANIMATED MAP
   Widget _map() {
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -284,6 +487,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
     );
   }
 
+  // AREA SELECTOR
   Widget _areaButton(String area) {
     final active = selectedArea == area;
 
@@ -311,6 +515,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
     );
   }
 
+  // BOTTOM HOSTEL PANEL
   Widget _bottomPanel() {
     final hostel = hostels[selectedHostel];
 
@@ -481,6 +686,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
   }
 }
 
+// RADAR ANIMATION
 class RadarAnimation extends StatelessWidget {
   final double value;
 
@@ -496,6 +702,7 @@ class RadarAnimation extends StatelessWidget {
   }
 }
 
+// RADAR PAINTER
 class RadarPainter extends CustomPainter {
   final double value;
 
@@ -522,6 +729,7 @@ class RadarPainter extends CustomPainter {
   bool shouldRepaint(covariant RadarPainter oldDelegate) => true;
 }
 
+// HOSTEL MARKER
 class HostelMarker extends StatelessWidget {
   final bool active;
   final double value;
@@ -561,6 +769,7 @@ class HostelMarker extends StatelessWidget {
   }
 }
 
+// MAP PAINTER
 class MapPainter extends CustomPainter {
   final double radarValue;
   final double particleValue;
@@ -581,7 +790,7 @@ class MapPainter extends CustomPainter {
         ).createShader(rect),
     );
 
-    // Map grid
+    // MAP GRID
     final gridPaint = Paint()
       ..color = Colors.white.withValues(alpha: .045)
       ..strokeWidth = 1;
@@ -594,7 +803,7 @@ class MapPainter extends CustomPainter {
       canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
     }
 
-    // Roads
+    // ROADS
     final roadPaint = Paint()
       ..color = const Color(0xFF5274A5).withValues(alpha: .4)
       ..style = PaintingStyle.stroke
@@ -639,7 +848,7 @@ class MapPainter extends CustomPainter {
       canvas.drawPath(path, roadPaint);
     }
 
-    // Moving city particles
+    // MOVING CITY PARTICLES
     final random = math.Random(17);
 
     for (int i = 0; i < 45; i++) {
@@ -655,18 +864,21 @@ class MapPainter extends CustomPainter {
       );
     }
 
-    // City labels
+    // CITY LABELS
     _drawLabel(canvas, 'ISLAMABAD', Offset(15, size.height * .16));
+
     _drawLabel(
       canvas,
       'F-10 SECTOR',
       Offset(size.width * .55, size.height * .30),
     );
+
     _drawLabel(
       canvas,
       'G-11 SECTOR',
       Offset(size.width * .10, size.height * .61),
     );
+
     _drawLabel(
       canvas,
       'RAWALPINDI',

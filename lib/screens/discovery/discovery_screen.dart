@@ -1,6 +1,7 @@
-import 'dart:math' as math;
+﻿import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import '../../models/hostel.dart';
 
 const Color mapBlue = Color(0xFF315BE8);
 const Color mapNavy = Color(0xFF101B36);
@@ -21,30 +22,51 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
 
   String selectedArea = 'Islamabad';
   int selectedHostel = 0;
+  RangeValues budgetRange = const RangeValues(8000, 30000);
+  String selectedRoomType = 'Any';
+  Set<String> selectedFacilities = {};
 
-  final hostels = const [
-    {
-      'name': 'University Living Hostel',
-      'area': 'H-13, Islamabad',
-      'price': 'PKR 18,000 / month',
-      'distance': '0.8 km away',
-      'rating': '4.8',
-    },
-    {
-      'name': 'Student Comfort Residence',
-      'area': 'G-10, Islamabad',
-      'price': 'PKR 15,000 / month',
-      'distance': '1.4 km away',
-      'rating': '4.6',
-    },
-    {
-      'name': 'Campus View Hostel',
-      'area': 'Satellite Town, Rawalpindi',
-      'price': 'PKR 12,000 / month',
-      'distance': '2.1 km away',
-      'rating': '4.7',
-    },
-  ];
+  final List<Hostel> hostels = [
+  const Hostel(
+    name: 'University Living Hostel',
+    area: 'H-13, Islamabad',
+    monthlyRent: 18000,
+    distanceKm: 0.8,
+    rating: 4.8,
+    roomTypes: {'Single', 'Double', 'Shared'},
+    facilities: {'Wi-Fi', 'Laundry'},
+  ),
+  const Hostel(
+    name: 'Student Comfort Residence',
+    area: 'G-10, Islamabad',
+    monthlyRent: 15000,
+    distanceKm: 1.4,
+    rating: 4.6,
+    roomTypes: {'Double', 'Shared'},
+    facilities: {'Wi-Fi', 'Mess'},
+  ),
+  const Hostel(
+    name: 'Campus View Hostel',
+    area: 'Satellite Town, Rawalpindi',
+    monthlyRent: 12000,
+    distanceKm: 2.1,
+    rating: 4.7,
+    roomTypes: {'Single', 'Shared'},
+    facilities: {'Wi-Fi', 'Air Conditioning'},
+  ),
+];
+  List<Hostel> get filteredHostels {
+    return hostels.where((hostel) {
+      final matchesBudget =
+          hostel.monthlyRent >= budgetRange.start &&
+          hostel.monthlyRent <= budgetRange.end;
+
+      final matchesRoomType = selectedRoomType == 'Any' ||
+          hostel.roomTypes.contains(selectedRoomType);
+
+      return matchesBudget && matchesRoomType;
+    }).toList();
+  }
 
   @override
   void initState() {
@@ -91,6 +113,205 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
       selectedHostel = index;
     });
     cards.forward(from: 0);
+  }
+
+  // FILTER BOTTOM SHEET
+  void _showFilters() {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Container(
+              decoration: const BoxDecoration(
+                color: Color(0xFFF8FAFF),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+              ),
+              padding: EdgeInsets.fromLTRB(
+                22,
+                12,
+                22,
+                MediaQuery.of(context).viewInsets.bottom + 24,
+              ),
+              child: SafeArea(
+                top: false,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Center(
+                        child: Container(
+                          height: 5,
+                          width: 42,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade300,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 22),
+
+                      Row(
+                        children: [
+                          const Expanded(
+                            child: Text(
+                              'Filter Hostels',
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: mapNavy,
+                              ),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setModalState(() {
+                                budgetRange = const RangeValues(8000, 30000);
+                                selectedRoomType = 'Any';
+                                selectedFacilities.clear();
+                              });
+                            },
+                            child: const Text('Reset'),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 22),
+
+                      const Text(
+                        'Monthly Budget',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: mapNavy,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+
+                      Text(
+                        'PKR ${budgetRange.start.round()} - '
+                        'PKR ${budgetRange.end.round()}',
+                        style: const TextStyle(
+                          color: mapBlue,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      RangeSlider(
+                        values: budgetRange,
+                        min: 5000,
+                        max: 50000,
+                        divisions: 45,
+                        activeColor: mapBlue,
+                        onChanged: (value) {
+                          setModalState(() {
+                            budgetRange = value;
+                          });
+                        },
+                      ),
+
+                      const SizedBox(height: 18),
+
+                      const Text(
+                        'Room Type',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: mapNavy,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+
+                      Wrap(
+                        spacing: 8,
+                        children: ['Any', 'Single', 'Double', 'Shared'].map((
+                          type,
+                        ) {
+                          return ChoiceChip(
+                            label: Text(type),
+                            selected: selectedRoomType == type,
+                            selectedColor: const Color(0xFFDCE5FF),
+                            onSelected: (_) {
+                              setModalState(() {
+                                selectedRoomType = type;
+                              });
+                            },
+                          );
+                        }).toList(),
+                      ),
+
+                      const SizedBox(height: 22),
+
+                      const Text(
+                        'Facilities',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: mapNavy,
+                        ),
+                      ),
+
+                      ...['Wi-Fi', 'Air Conditioning', 'Laundry', 'Mess'].map((
+                        facility,
+                      ) {
+                        return CheckboxListTile(
+                          contentPadding: EdgeInsets.zero,
+                          activeColor: mapBlue,
+                          title: Text(facility),
+                          value: selectedFacilities.contains(facility),
+                          onChanged: (value) {
+                            setModalState(() {
+                              if (value == true) {
+                                selectedFacilities.add(facility);
+                              } else {
+                                selectedFacilities.remove(facility);
+                              }
+                            });
+                          },
+                        );
+                      }),
+
+                      const SizedBox(height: 18),
+
+                      SizedBox(
+                        width: double.infinity,
+                        height: 54,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: mapBlue,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              selectedHostel = 0;
+                            });
+                            Navigator.pop(sheetContext);
+                            cards.forward(from: 0);
+                          },
+                          child: const Text(
+                            'Apply Filters',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -158,7 +379,8 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: _showFilters,
+            tooltip: 'Filter hostels',
             icon: const Icon(Icons.tune_rounded, color: Colors.white),
           ),
         ],
@@ -213,7 +435,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
             ),
 
             // Hostel markers
-            ...List.generate(markerPositions.length, (index) {
+            ...List.generate(math.min(markerPositions.length, filteredHostels.length), (index) {
               final position = markerPositions[index];
 
               return Positioned(
@@ -320,7 +542,26 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
   }
 
   Widget _bottomPanel() {
-    final hostel = hostels[selectedHostel];
+    final results = filteredHostels;
+
+    if (results.isEmpty) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(24),
+        decoration: const BoxDecoration(
+          color: Color(0xFFF8FAFF),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(27)),
+        ),
+        child: const Text(
+          'No hostels match your budget. Try increasing your budget range.',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: mapNavy, fontWeight: FontWeight.w600),
+        ),
+      );
+    }
+
+    final safeIndex = selectedHostel < results.length ? selectedHostel : 0;
+    final hostel = results[safeIndex];
 
     return AnimatedBuilder(
       animation: cards,
@@ -352,7 +593,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
                         ),
                       ),
                       Text(
-                        '${hostels.length} results',
+                        '${results.length} results',
                         style: const TextStyle(
                           color: mapBlue,
                           fontSize: 12,
@@ -451,7 +692,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
 
                   // Marker selection
                   Row(
-                    children: List.generate(hostels.length, (index) {
+                    children: List.generate(results.length, (index) {
                       final active = selectedHostel == index;
 
                       return Expanded(
@@ -702,3 +943,6 @@ class MapPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant MapPainter oldDelegate) => true;
 }
+
+
+
