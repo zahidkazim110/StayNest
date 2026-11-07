@@ -1,9 +1,12 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
+import '../../models/student_profile.dart';
+import '../../models/profile_storage.dart';
+import '../../models/auth_storage.dart';
 
 import '../../components/buttons/primary_button.dart';
 import '../../core/theme/app_colors.dart';
 import 'login_screen.dart';
-import '../discovery/discovery_screen.dart';
+import '../home/home_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -34,13 +37,39 @@ class _SignupScreenState extends State<SignupScreen> {
     super.dispose();
   }
 
-  void _handleSignup() {
+  Future<void> _handleSignup() async {
     if (!_formKey.currentState!.validate()) return;
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const DiscoveryScreen()),
+    final profile = StudentProfile(
+      fullName: _nameController.text.trim(),
+      email: _emailController.text.trim(),
+      phoneNumber: _phoneController.text.trim(),
+      occupation: 'Student',
+      universityName: '',
+      cnic: '',
     );
+
+    try {
+      await ProfileStorage.saveProfile(profile);
+
+      await AuthStorage.saveCredentials(
+        _emailController.text.trim(),
+        _passwordController.text,
+      );
+
+      if (!mounted) return;
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Unable to save profile: $e')),
+      );
+    }
   }
 
   String? _validateEmail(String? value) {
@@ -320,3 +349,7 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 }
+
+
+
+

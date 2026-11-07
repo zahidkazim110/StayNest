@@ -3,6 +3,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../models/hostel.dart';
+import '../../models/hostel_activity_storage.dart';
+import '../hostel_details/hostel_details_screen.dart';
 
 const Color mapBlue = Color(0xFF315BE8);
 const Color mapNavy = Color(0xFF101B36);
@@ -702,6 +704,25 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
                     ),
                   ),
 
+                  const SizedBox(height: 14),
+
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () async {
+                        await HostelActivityStorage.addRecentlyViewed(hostel);
+                        if (!context.mounted) return;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => HostelDetailsScreen(hostel: hostel),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.open_in_new_rounded),
+                      label: const Text('View Hostel Details'),
+                    ),
+                  ),
                   const SizedBox(height: 14),
 
                   // Marker selection
