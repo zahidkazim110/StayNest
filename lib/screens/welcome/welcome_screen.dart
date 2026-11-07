@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../components/buttons/primary_button.dart';
 import '../../core/theme/app_colors.dart';
-import '../authentication/login_screen.dart';
+import '../tutorial/tutorial_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -75,7 +75,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
       PageRouteBuilder(
         transitionDuration: const Duration(milliseconds: 1100),
         pageBuilder: (context, animation, secondaryAnimation) {
-          return const LoginScreen();
+          return const TutorialScreen();
         },
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           final curved = CurvedAnimation(
@@ -489,14 +489,38 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
                             const Spacer(),
 
-                            const Text(
-                              'STUDENT LIVING',
-                              style: TextStyle(
-                                fontSize: 9,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.primary,
-                                letterSpacing: 1,
-                              ),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  tooltip: 'Notifications',
+                                  onPressed: () {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Notifications coming soon.'),
+                                      ),
+                                    );
+                                  },
+                                  icon: const Icon(
+                                    Icons.notifications_none_rounded,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                                IconButton(
+                                  tooltip: 'Profile',
+                                  onPressed: () {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Profile coming soon.'),
+                                      ),
+                                    );
+                                  },
+                                  icon: const Icon(
+                                    Icons.person_outline_rounded,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -631,3 +655,6 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     );
   }
 }
+
+
+
