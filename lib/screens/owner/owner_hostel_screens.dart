@@ -193,7 +193,9 @@ class _AddHostelScreenState extends State<AddHostelScreen> {
 
   void _readCoordinatesFromLink() {
     final match = RegExp(r'(-?\d{1,2}\.\d+)\s*[,/]\s*(-?\d{1,3}\.\d+)')
-      .firstMatch(_maps.text);
+      .firstMatch(_maps.text) ??
+      RegExp(r'!3d(-?\d{1,2}\.\d+)!4d(-?\d{1,3}\.\d+)')
+          .firstMatch(_maps.text);
     if (match == null) {
       setState(() { _lat = null; _lng = null; });
       return;
