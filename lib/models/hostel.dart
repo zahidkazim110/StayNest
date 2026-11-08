@@ -34,7 +34,7 @@ class Hostel {
       case 'area':
         return area;
       case 'price':
-        return 'PKR ${monthlyRent.toString().replaceAllMapped(RegExp(r'(\\d)(?=(\\d{3})+(?!\\d))'), (m) => '${m[1]},')} / month';
+        return 'PKR ${monthlyRent.toString().replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (m) => '${m[1]},')} / month';
       case 'distance':
         return distanceKm > 0 ? '${distanceKm.toStringAsFixed(1)} km away' : 'Location listed';
       case 'rating':
