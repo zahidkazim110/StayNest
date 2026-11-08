@@ -89,7 +89,7 @@ class HostelDetailsScreen extends StatelessWidget {
                 const SizedBox(height: 25),
                 _sectionHeading('Location'),
                 const SizedBox(height: 12),
-                _locationCard(),
+                _locationCard(context),
               ]),
             ),
           ),
@@ -368,7 +368,7 @@ class HostelDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _locationCard() {
+  Widget _locationCard(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(17),
       decoration: BoxDecoration(
