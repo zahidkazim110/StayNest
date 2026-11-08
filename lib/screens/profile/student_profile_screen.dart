@@ -6,6 +6,7 @@ import '../../core/theme/app_colors.dart';
 import '../../models/profile_storage.dart';
 import '../../models/student_profile.dart';
 import '../booking/my_bookings_screen.dart';
+import 'profile_settings_screen.dart';
 
 class StudentProfileScreen extends StatefulWidget {
   const StudentProfileScreen({super.key});
@@ -327,6 +328,27 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                     },
                     icon: const Icon(Icons.calendar_month_outlined),
                     label: const Text('My Bookings'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.primary,
+                      minimumSize: const Size(double.infinity, 50),
+                      side: const BorderSide(color: AppColors.primary),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  OutlinedButton.icon(
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const ProfileSettingsScreen(),
+                      ),
+                    ),
+                    icon: const Icon(Icons.settings_outlined),
+                    label: const Text('Profile Settings'),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.primary,
                       minimumSize: const Size(double.infinity, 50),
