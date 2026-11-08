@@ -39,3 +39,43 @@ Owner hostel listings, room records and owner profile fields are currently store
 The discovery screen can read owner-created listings stored on the same device. A production deployment still needs the StayNest API/database, authenticated owner-to-listing ownership, cloud image storage, live booking requests and server-side availability updates. Booking requests and analytics remain demo experiences until those services are connected.
 
 Google Maps links are stored with each listing and exposed on student hostel details for copying. Native in-app map rendering/navigation still requires the Google Maps platform configuration and API key.
+
+
+## Android APK release
+
+The repository includes a GitHub Actions workflow at `.github/workflows/android-apk.yml`. It runs dependency resolution, static analysis and a release APK build when changes are pushed to `feature/play-store-polish`, or when manually dispatched from the Actions tab. The generated APK is uploaded as the `staynest-android-apk` workflow artifact.
+
+### Installable preview vs. distributable release
+
+If no signing key is configured, Gradle uses the Android debug key to create an installable **preview APK**. This is for testing only and must not be treated as the permanent signing identity for public distribution.
+
+For a distributable APK, create and protect a private upload/release keystore. Never commit the keystore or its passwords to this repository. Add these GitHub Actions repository secrets:
+
+- `ANDROID_KEYSTORE_BASE64`: Base64-encoded contents of the keystore file.
+- `ANDROID_KEYSTORE_PASSWORD`: Keystore password.
+- `ANDROID_KEY_ALIAS`: Key alias.
+- `ANDROID_KEY_PASSWORD`: Key password.
+
+On Windows PowerShell, generate a keystore locally with `keytool`, then encode it with:
+
+```powershell
+[Convert]::ToBase64String([IO.File]::ReadAllBytes(".\\staynest-release.jks")) | Set-Clipboard
+```
+
+Paste the result into the `ANDROID_KEYSTORE_BASE64` repository secret. Keep a secure offline backup of the keystore and passwords. Losing the signing key can prevent users from installing future updates over the existing app.
+
+### Build locally
+
+```powershell
+flutter pub get
+flutter analyze
+flutter build apk --release
+```
+
+The APK is written to `build\\app\\outputs\\flutter-apk\\app-release.apk`.
+
+Before public distribution, replace the template Android application ID `com.example.staynest` with a permanent package ID controlled by the app publisher. Changing it after distribution creates a different Android app identity.
+
+### Current functional scope
+
+This build remains a local-first demonstration. Listings, profiles, favourites and bookings are stored on the device. Payment choices are demonstrative only; the app does not collect or transfer real money. A production service still requires backend APIs, authentication, cloud synchronization, verified listing ownership, live booking workflows and payment-provider integration.
