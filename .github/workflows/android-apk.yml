@@ -5,6 +5,7 @@ on:
     branches:
       - feature/play-store-polish
       - feature/owner-hostel-photos
+      - main
     tags:
       - "v*"
   workflow_dispatch:
@@ -56,7 +57,11 @@ jobs:
             } >> "$GITHUB_ENV"
             echo "Release keystore configured."
           else
-            echo "No release keystore configured; building a debug-signed preview APK."
+            if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+              echo "::error::A permanent Android release keystore is required for version-tag releases."
+              exit 1
+            fi
+            echo "No release keystore configured; building a debug-signed preview APK for CI only."
           fi
 
       - name: Build release APK
