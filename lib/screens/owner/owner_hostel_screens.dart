@@ -203,7 +203,7 @@ class _AddHostelScreenState extends State<AddHostelScreen> {
       setState(() {
         _lat = position.latitude;
         _lng = position.longitude;
-        _maps.text = 'https://www.google.com/maps/search/?api=1&query=${_lat},${_lng}';
+        _maps.text = 'https://www.google.com/maps/search/?api=1&query=$_lat,$_lng';
       });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Your current map pin has been added.')));
@@ -213,7 +213,9 @@ class _AddHostelScreenState extends State<AddHostelScreen> {
           SnackBar(content: Text(error.toString().replaceFirst('Exception: ', ''))));
       }
     } finally {
-      if (mounted) setState(() => _gettingLocation = false);
+      if (mounted) {
+        setState(() => _gettingLocation = false);
+      }
     }
   }
 
