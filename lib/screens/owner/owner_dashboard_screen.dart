@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import 'owner_analytics_screen.dart';
 
 class OwnerDashboardScreen extends StatelessWidget {
   const OwnerDashboardScreen({super.key});
@@ -223,6 +224,17 @@ class OwnerDashboardScreen extends StatelessWidget {
               ),
               const SizedBox(height: 14),
 
+              _ActionTile(
+                icon: Icons.analytics_outlined,
+                title: 'Hostel Analytics',
+                subtitle: 'View revenue and occupancy insights',
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const OwnerAnalyticsScreen(),
+                  ),
+                ),
+              ),
               _ActionTile(
                 icon: Icons.add_home_work_rounded,
                 title: 'Add New Hostel',
