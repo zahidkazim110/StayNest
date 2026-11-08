@@ -255,10 +255,15 @@ class _AddHostelScreenState extends State<AddHostelScreen> {
         const SnackBar(content: Text('Hostel listing saved on this device.'), backgroundColor: AppColors.success));
       Navigator.pop(context, true);
     } catch (_) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not save this listing. Please try again.')));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not save this listing. Please try again.')),
+        );
+      }
     } finally {
-      if (mounted) setState(() => _saving = false);
+      if (mounted) {
+        setState(() => _saving = false);
+      }
     }
   }
 
