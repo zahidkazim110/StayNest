@@ -95,7 +95,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
       }
       converted.add(Hostel(
         name: listing.name,
-        area: '\${listing.address}, \${listing.city}',
+        area: '${listing.address}, ${listing.city}',
         monthlyRent: rent,
         distanceKm: 0,
         rating: 0,
