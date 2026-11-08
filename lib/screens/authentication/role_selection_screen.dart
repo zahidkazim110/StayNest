@@ -36,7 +36,7 @@ class RoleSelectionScreen extends StatelessWidget {
                   gradient: const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [Color(0xFF416BF0), Color(0xFF2449C8)],
+                    colors: [Color(0xFF087F75), Color(0xFF075E57)],
                   ),
                   borderRadius: BorderRadius.circular(25),
                   boxShadow: [
@@ -70,7 +70,7 @@ class RoleSelectionScreen extends StatelessWidget {
                       'A comfortable place to stay is just a few steps away. Tell us how you plan to use the app.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Color(0xFFE5ECFF),
+                        color: Color(0xFFE1F3EF),
                         fontSize: 13,
                         height: 1.55,
                       ),
