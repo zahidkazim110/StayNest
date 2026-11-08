@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/theme/app_colors.dart';
@@ -87,7 +92,11 @@ class _OwnerHostelsScreenState extends State<OwnerHostelsScreen> {
                   Row(children: [
                     Container(width: 48, height: 48,
                       decoration: BoxDecoration(color: AppColors.primaryLight, borderRadius: BorderRadius.circular(14)),
-                      child: const Icon(Icons.apartment_rounded, color: AppColors.primary)),
+                      clipBehavior: Clip.antiAlias,
+                      child: hostel.imagePaths.isNotEmpty
+                          ? Image.file(File(hostel.imagePaths.first), fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => const Icon(Icons.apartment_rounded, color: AppColors.primary))
+                          : const Icon(Icons.apartment_rounded, color: AppColors.primary)),
                     const SizedBox(width: 12),
                     Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text(hostel.name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
@@ -106,6 +115,14 @@ class _OwnerHostelsScreenState extends State<OwnerHostelsScreen> {
                       ],
                     ),
                   ]),
+                  if (hostel.imagePaths.isNotEmpty) ...[
+                    const SizedBox(height: 10),
+                    Row(children: [
+                      const Icon(Icons.photo_library_outlined, size: 15, color: AppColors.textSecondary),
+                      const SizedBox(width: 5),
+                      Text('${hostel.imagePaths.length} photos added', style: const TextStyle(fontSize: 11, color: AppColors.textSecondary)),
+                    ]),
+                  ],
                   const SizedBox(height: 14),
                   Row(children: [
                     _MiniInfo(icon: Icons.meeting_room_outlined, label: '${hostel.rooms.length} rooms'),
@@ -153,6 +170,9 @@ class _AddHostelScreenState extends State<AddHostelScreen> {
   double? _lng;
   bool _gettingLocation = false;
   bool _saving = false;
+  bool _pickingPhotos = false;
+  final ImagePicker _imagePicker = ImagePicker();
+  final List<String> _imagePaths = [];
   final Set<String> _facilities = {};
   static const _facilityOptions = [
     'Wi-Fi', 'Mess', 'Laundry', 'Air conditioning', 'Heating',
@@ -174,6 +194,7 @@ class _AddHostelScreenState extends State<AddHostelScreen> {
       _lat = hostel.latitude;
       _lng = hostel.longitude;
       _facilities.addAll(hostel.facilities);
+      _imagePaths.addAll(hostel.imagePaths);
     }
   }
 
@@ -182,6 +203,63 @@ class _AddHostelScreenState extends State<AddHostelScreen> {
     _name.dispose(); _address.dispose(); _description.dispose();
     _phone.dispose(); _maps.dispose();
     super.dispose();
+  }
+
+
+  Future<void> _pickPhotos() async {
+    if (_imagePaths.length >= 8) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('You can add up to 8 hostel photos.')),
+      );
+      return;
+    }
+
+    setState(() => _pickingPhotos = true);
+    try {
+      final selected = await _imagePicker.pickMultiImage(
+        imageQuality: 85,
+        maxWidth: 1800,
+        maxHeight: 1800,
+      );
+      if (selected.isEmpty || !mounted) return;
+
+      final remaining = 8 - _imagePaths.length;
+      final appDirectory = await getApplicationDocumentsDirectory();
+      final photoDirectory = Directory(path.join(appDirectory.path, 'hostel_photos'));
+      await photoDirectory.create(recursive: true);
+
+      final copiedPaths = <String>[];
+      for (final image in selected.take(remaining)) {
+        final extension = path.extension(image.path).isNotEmpty
+            ? path.extension(image.path)
+            : '.jpg';
+        final destination = path.join(
+          photoDirectory.path,
+          'hostel_${DateTime.now().microsecondsSinceEpoch}_${copiedPaths.length}$extension',
+        );
+        copiedPaths.add((await File(image.path).copy(destination)).path);
+      }
+
+      if (!mounted) return;
+      setState(() => _imagePaths.addAll(copiedPaths));
+      if (selected.length > remaining) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Only 8 photos can be saved per hostel.')),
+        );
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not add photos: $error')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _pickingPhotos = false);
+    }
+  }
+
+  void _removePhoto(String photoPath) {
+    setState(() => _imagePaths.remove(photoPath));
   }
 
   Future<void> _useCurrentLocation() async {
@@ -247,6 +325,7 @@ class _AddHostelScreenState extends State<AddHostelScreen> {
         description: _description.text.trim(), contactPhone: _phone.text.trim(),
         googleMapsUrl: _maps.text.trim(), latitude: _lat, longitude: _lng,
         facilities: _facilities, rooms: widget.existing?.rooms ?? const [],
+        imagePaths: List<String>.from(_imagePaths),
         createdAt: widget.existing?.createdAt ?? DateTime.now(),
       );
       await OwnerHostelStorage.saveHostel(hostel);
@@ -346,6 +425,104 @@ class _AddHostelScreenState extends State<AddHostelScreen> {
       _FieldLabel('About this hostel'),
       TextFormField(controller: _description, minLines: 3, maxLines: 5,
         decoration: const InputDecoration(hintText: 'Describe the environment, rules, nearby universities and what makes your hostel special...')),
+
+      const SizedBox(height: 21),
+      const _SectionHeading(
+        'Hostel photos',
+        'Add clear photos of bedrooms, bathrooms, common areas and the building exterior.',
+      ),
+      const SizedBox(height: 10),
+      Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Expanded(
+                  child: Text(
+                    'Property gallery',
+                    style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.textPrimary),
+                  ),
+                ),
+                Text(
+                  '${_imagePaths.length}/8',
+                  style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                ),
+              ],
+            ),
+            const SizedBox(height: 5),
+            const Text(
+              'Photos are stored on this device with your listing. They are not uploaded to a server yet.',
+              style: TextStyle(fontSize: 11, height: 1.4, color: AppColors.textSecondary),
+            ),
+            if (_imagePaths.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _imagePaths.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                ),
+                itemBuilder: (context, index) {
+                  final photoPath = _imagePaths[index];
+                  return Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.file(
+                          File(photoPath),
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            color: AppColors.primaryLight,
+                            child: const Icon(Icons.broken_image_outlined, color: AppColors.primary),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 3,
+                        right: 3,
+                        child: Material(
+                          color: Colors.black54,
+                          shape: const CircleBorder(),
+                          child: InkWell(
+                            customBorder: const CircleBorder(),
+                            onTap: () => _removePhoto(photoPath),
+                            child: const Padding(
+                              padding: EdgeInsets.all(5),
+                              child: Icon(Icons.close, color: Colors.white, size: 16),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ],
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: _pickingPhotos || _imagePaths.length >= 8 ? null : _pickPhotos,
+                icon: _pickingPhotos
+                    ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                    : const Icon(Icons.add_photo_alternate_outlined),
+                label: Text(_pickingPhotos ? 'Adding photos...' : 'Choose photos from gallery'),
+              ),
+            ),
+          ],
+        ),
+      ),
       const SizedBox(height: 21),
       const _SectionHeading('Facilities and amenities', 'Select everything available at your property.'),
       const SizedBox(height: 10),
