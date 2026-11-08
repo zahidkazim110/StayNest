@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../components/cards/hostel_card.dart';
 import '../../core/theme/app_colors.dart';
 import '../../models/hostel.dart';
+import '../../models/owner_hostel.dart';
 import '../ai_assistant/ai_assistant_screen.dart';
 import '../ai_recommendation/ai_recommendation_screen.dart';
 import '../discovery/discovery_screen.dart';
@@ -24,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String selectedRoom = 'All';
   final searchController = TextEditingController();
 
-  final List<Hostel> hostels = const [
+  final List<Hostel> hostels = [
     Hostel(
       name: 'University Living Hostel',
       area: 'H-13, Islamabad',
@@ -53,6 +54,70 @@ class _HomeScreenState extends State<HomeScreen> {
       facilities: {'Wi-Fi', 'AC'},
     ),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadOwnerListings();
+  }
+
+  Future<void> _loadOwnerListings() async {
+    final listings = await OwnerHostelStorage.getHostels();
+    if (!mounted) return;
+
+    final converted = <Hostel>[];
+    for (final listing in listings) {
+      if (listing.rooms.isEmpty) continue;
+
+      final rent = listing.rooms
+          .map((room) => room.monthlyRent)
+          .reduce((a, b) => a < b ? a : b);
+      final roomTypes = listing.rooms.map((room) => room.roomType).toSet();
+      final roomPrices = <String, int>{};
+      for (final room in listing.rooms) {
+        final current = roomPrices[room.roomType];
+        if (current == null || room.monthlyRent < current) {
+          roomPrices[room.roomType] = room.monthlyRent;
+        }
+      }
+
+      converted.add(
+        Hostel(
+          name: listing.name,
+          area: '${listing.address}, ${listing.city}',
+          monthlyRent: rent,
+          distanceKm: 0,
+          rating: 0,
+          roomTypes: roomTypes,
+          facilities: {
+            ...listing.facilities,
+            ...listing.rooms.expand((room) => room.facilities),
+          },
+          googleMapsUrl: listing.googleMapsUrl,
+          contactPhone: listing.contactPhone,
+          description: listing.description,
+          availableBeds: listing.rooms.fold<int>(
+            0,
+            (total, room) => total + room.availableBeds,
+          ),
+          isOwnerListing: true,
+          roomPrices: roomPrices,
+          roomAvailability: {
+            for (final type in roomTypes)
+              type: listing.rooms
+                  .where((room) => room.roomType == type)
+                  .fold<int>(0, (total, room) => total + room.availableBeds),
+          },
+        ),
+      );
+    }
+
+    if (!mounted) return;
+    setState(() {
+      hostels.removeWhere((hostel) => hostel.isOwnerListing);
+      hostels.addAll(converted);
+    });
+  }
 
   List<Hostel> get filteredHostels {
     return hostels.where((hostel) {
