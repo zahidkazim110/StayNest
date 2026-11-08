@@ -95,7 +95,7 @@ class _OwnerHostelsScreenState extends State<OwnerHostelsScreen> {
                       clipBehavior: Clip.antiAlias,
                       child: hostel.imagePaths.isNotEmpty
                           ? Image.file(File(hostel.imagePaths.first), fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => const Icon(Icons.apartment_rounded, color: AppColors.primary))
+                              errorBuilder: (_, _, _) => const Icon(Icons.apartment_rounded, color: AppColors.primary))
                           : const Icon(Icons.apartment_rounded, color: AppColors.primary)),
                     const SizedBox(width: 12),
                     Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
