@@ -162,7 +162,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       gradient: const LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
-                        colors: [Color(0xFF557BFF), AppColors.primaryDark],
+                        colors: [Color(0xFF087F75), AppColors.primaryDark],
                       ),
                       borderRadius: BorderRadius.circular(19),
                       boxShadow: [
