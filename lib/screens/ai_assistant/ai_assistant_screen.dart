@@ -32,7 +32,8 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
     final budgetMatch = RegExp(r'(\d{4,6})').firstMatch(lower);
     final budget = budgetMatch == null ? null : int.tryParse(budgetMatch.group(1)!);
     final city = lower.contains('rawalpindi') ? 'Rawalpindi' : lower.contains('islamabad') ? 'Islamabad' : null;
-    final room = ['single', 'double', 'shared'].where((item) => lower.contains(item)).firstOrNull;
+    final roomMatches = ['single', 'double', 'shared'].where((item) => lower.contains(item)).toList();
+    final room = roomMatches.isEmpty ? null : roomMatches.first;
     final matches = widget.hostels.where((hostel) {
       final cityOk = city == null || hostel.area.toLowerCase().contains(city.toLowerCase());
       final budgetOk = budget == null || hostel.monthlyRent <= budget;
