@@ -58,26 +58,28 @@ class OwnerHostel {
   final double? longitude;
   final Set<String> facilities;
   final List<HostelRoom> rooms;
+  final List<String> imagePaths;
   final DateTime createdAt;
 
   const OwnerHostel({
     required this.id, required this.name, required this.address,
     required this.city, required this.description, required this.contactPhone,
     required this.googleMapsUrl, this.latitude, this.longitude,
-    required this.facilities, required this.rooms, required this.createdAt,
+    required this.facilities, required this.rooms,
+    this.imagePaths = const [], required this.createdAt,
   });
 
   OwnerHostel copyWith({String? name, String? address, String? city,
     String? description, String? contactPhone, String? googleMapsUrl,
     double? latitude, double? longitude, Set<String>? facilities,
-    List<HostelRoom>? rooms}) => OwnerHostel(
+    List<HostelRoom>? rooms, List<String>? imagePaths}) => OwnerHostel(
       id: id, name: name ?? this.name, address: address ?? this.address,
       city: city ?? this.city, description: description ?? this.description,
       contactPhone: contactPhone ?? this.contactPhone,
       googleMapsUrl: googleMapsUrl ?? this.googleMapsUrl,
       latitude: latitude ?? this.latitude, longitude: longitude ?? this.longitude,
       facilities: facilities ?? this.facilities, rooms: rooms ?? this.rooms,
-      createdAt: createdAt,
+      imagePaths: imagePaths ?? this.imagePaths, createdAt: createdAt,
     );
 
   Map<String, dynamic> toMap() => {
@@ -85,7 +87,7 @@ class OwnerHostel {
     'description': description, 'contactPhone': contactPhone,
     'googleMapsUrl': googleMapsUrl, 'latitude': latitude, 'longitude': longitude,
     'facilities': facilities.toList(), 'rooms': rooms.map((r) => r.toMap()).toList(),
-    'createdAt': createdAt.toIso8601String(),
+    'imagePaths': imagePaths, 'createdAt': createdAt.toIso8601String(),
   };
 
   factory OwnerHostel.fromMap(Map<String, dynamic> map) => OwnerHostel(
@@ -101,6 +103,7 @@ class OwnerHostel {
     facilities: Set<String>.from(map['facilities'] ?? const []),
     rooms: (map['rooms'] as List? ?? const [])
       .map((item) => HostelRoom.fromMap(Map<String, dynamic>.from(item as Map))).toList(),
+    imagePaths: List<String>.from(map['imagePaths'] ?? const []),
     createdAt: DateTime.tryParse(map['createdAt']?.toString() ?? '') ?? DateTime.now(),
   );
 }
