@@ -482,7 +482,7 @@ class _AddHostelScreenState extends State<AddHostelScreen> {
                         child: Image.file(
                           File(photoPath),
                           fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Container(
+                          errorBuilder: (_, _, _) => Container(
                             color: AppColors.primaryLight,
                             child: const Icon(Icons.broken_image_outlined, color: AppColors.primary),
                           ),
