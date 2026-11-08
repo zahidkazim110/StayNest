@@ -2,9 +2,9 @@
 
 import '../authentication/role_selection_screen.dart';
 
-const Color _navy = Color(0xFF101A38);
-const Color _blue = Color(0xFF4775FF);
-const Color _purple = Color(0xFF8B72FF);
+const Color _navy = Color(0xFF142927);
+const Color _blue = Color(0xFF087F75);
+const Color _purple = Color(0xFF65A99B);
 
 class TutorialScreen extends StatefulWidget {
   const TutorialScreen({super.key});
@@ -25,28 +25,28 @@ class _TutorialScreenState extends State<TutorialScreen>
       title: 'Your next home\nstarts here.',
       description:
           'Discover student hostels around your university without wasting hours searching.',
-      color: Color(0xFF4775FF),
+      color: Color(0xFF087F75),
     ),
     _TutorialData(
       tag: 'SMART SEARCH',
       title: 'Your budget.\nYour choice.',
       description:
           'Set your price range, room preference and facilities. Find what matters to you.',
-      color: Color(0xFF9675FF),
+      color: Color(0xFF4D9C8D),
     ),
     _TutorialData(
       tag: 'EXPLORE LOCATIONS',
       title: 'See it before\nyou choose it.',
       description:
           'Explore hostel locations on the map and compare nearby accommodation options.',
-      color: Color(0xFF16C9A0),
+      color: Color(0xFF83BFAE),
     ),
     _TutorialData(
       tag: 'YOUR NEW BEGINNING',
       title: 'One step closer\nto feeling home.',
       description:
           'Choose your preferred accommodation and get ready for a better student living experience.',
-      color: Color(0xFFFFB45B),
+      color: Color(0xFFD8A64E),
     ),
   ];
 
@@ -136,7 +136,7 @@ class _TutorialScreenState extends State<TutorialScreen>
                     child: const Text(
                       'Skip',
                       style: TextStyle(
-                        color: Color(0xFFB7C2E1),
+                        color: Color(0xFFB8CCC7),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -216,7 +216,7 @@ class _TutorialScreenState extends State<TutorialScreen>
                                 child: Text(
                                   data.description,
                                   style: const TextStyle(
-                                    color: Color(0xFFB7C2E1),
+                                    color: Color(0xFFB8CCC7),
                                     fontSize: 14,
                                     height: 1.7,
                                   ),
@@ -261,7 +261,7 @@ class _TutorialScreenState extends State<TutorialScreen>
                       Text(
                         '0${_pages.length}',
                         style: const TextStyle(
-                          color: Color(0xFF8793B3),
+                          color: Color(0xFF8BA39C),
                           fontSize: 13,
                         ),
                       ),
@@ -326,7 +326,7 @@ class _TutorialScreenState extends State<TutorialScreen>
                   const Text(
                     'MADE FOR STUDENT LIVING',
                     style: TextStyle(
-                      color: Color(0xFF647293),
+                      color: Color(0xFF667875),
                       fontSize: 9,
                       letterSpacing: 2,
                       fontWeight: FontWeight.w700,
@@ -419,7 +419,7 @@ class _TutorialArtwork extends StatelessWidget {
             page == 1 ? 'Your budget' :
             page == 2 ? 'Find locations' :
             'Your new home',
-            const Color(0xFF16C9A0),
+            const Color(0xFF83BFAE),
           ),
         ),
       ],
@@ -439,7 +439,7 @@ class _TutorialArtwork extends StatelessWidget {
               Container(
                 height: 35,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF1F4FB),
+                  color: const Color(0xFFEDF2EF),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Row(
@@ -484,7 +484,7 @@ class _TutorialArtwork extends StatelessWidget {
               Container(
                 height: 6,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE7E9F4),
+                  color: const Color(0xFFE3EAE5),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Align(
@@ -517,11 +517,11 @@ class _TutorialArtwork extends StatelessWidget {
               const SizedBox(height: 8),
               const Row(
                 children: [
-                  Icon(Icons.check_circle, color: Color(0xFF16C9A0), size: 15),
+                  Icon(Icons.check_circle, color: Color(0xFF83BFAE), size: 15),
                   SizedBox(width: 6),
                   Text('Wi-Fi', style: TextStyle(fontSize: 11)),
                   SizedBox(width: 15),
-                  Icon(Icons.check_circle, color: Color(0xFF16C9A0), size: 15),
+                  Icon(Icons.check_circle, color: Color(0xFF83BFAE), size: 15),
                   SizedBox(width: 6),
                   Text('Mess', style: TextStyle(fontSize: 11)),
                 ],
@@ -536,7 +536,7 @@ class _TutorialArtwork extends StatelessWidget {
             child: Stack(
               children: [
                 Container(
-                  color: const Color(0xFFEAF0E9),
+                  color: const Color(0xFFE1F3EF),
                   child: CustomPaint(
                     painter: _MapArtworkPainter(),
                     size: Size.infinite,
@@ -550,7 +550,7 @@ class _TutorialArtwork extends StatelessWidget {
                 const Positioned(
                   top: 105,
                   right: 42,
-                  child: _MapPin(color: Color(0xFF16C9A0)),
+                  child: _MapPin(color: Color(0xFF83BFAE)),
                 ),
                 const Positioned(
                   bottom: 48,
@@ -594,10 +594,10 @@ class _TutorialArtwork extends StatelessWidget {
                 width: 90,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: const Color(0xFF16C9A0).withValues(alpha: 0.13),
+                  color: const Color(0xFF83BFAE).withValues(alpha: 0.13),
                 ),
                 child: const Icon(Icons.check_rounded,
-                    size: 55, color: Color(0xFF16C9A0)),
+                    size: 55, color: Color(0xFF83BFAE)),
               ),
               const SizedBox(height: 20),
               const Text('Booking ready!',
@@ -651,7 +651,7 @@ class _TutorialArtwork extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: const Color(0xFFF5F7FC),
+        color: const Color(0xFFF6F7F3),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -685,7 +685,7 @@ class _TutorialArtwork extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: const Color(0xFF202D50),
+        color: const Color(0xFF172B2A),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
         boxShadow: [
@@ -716,7 +716,7 @@ class _ChoiceChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
-        color: selected ? const Color(0xFFE9EEFF) : const Color(0xFFF4F5F8),
+        color: selected ? const Color(0xFFE1F3EF) : const Color(0xFFEDF2EF),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: selected ? _blue : Colors.transparent,
@@ -751,7 +751,7 @@ class _MapArtworkPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     final thinRoad = Paint()
-      ..color = const Color(0xFFD4DED1)
+      ..color = const Color(0xFFB8DCD2)
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
 

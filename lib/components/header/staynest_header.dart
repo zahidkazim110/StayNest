@@ -16,10 +16,10 @@ class StayNestHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final foreground = dark ? Colors.white : const Color(0xFF17213D);
+    final foreground = dark ? Colors.white : const Color(0xFF172B2A);
     final tileColor = dark
-        ? const Color(0xFF26345B)
-        : const Color(0xFFEAF0FF);
+        ? const Color(0xFF21433F)
+        : const Color(0xFFE1F3EF);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -31,7 +31,7 @@ class StayNestHeader extends StatelessWidget {
               width: 42,
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF4775FF), Color(0xFF315BE8)],
+                  colors: [Color(0xFF087F75), Color(0xFF087F75)],
                 ),
                 borderRadius: BorderRadius.circular(13),
               ),

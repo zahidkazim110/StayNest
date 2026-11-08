@@ -58,12 +58,19 @@ class _RoomSelectionScreenState extends State<RoomSelectionScreen> {
             },
             child: Column(
               children: rooms.map((room) {
+                final rent = widget.hostel.roomPrices?[room] ?? widget.hostel.monthlyRent;
+                final availability = widget.hostel.roomAvailability?[room];
                 return Card(
                   child: RadioListTile<String>(
                     value: room,
+                    enabled: availability == null || availability > 0,
                     title: Text('$room Room'),
                     subtitle: Text(
-                      'PKR ${widget.hostel.monthlyRent} / month',
+                      availability == null
+                          ? 'PKR $rent / month'
+                          : availability == 0
+                              ? 'Currently full'
+                              : 'PKR $rent / month • $availability beds available',
                     ),
                   ),
                 );

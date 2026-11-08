@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../models/hostel.dart';
 import '../../components/buttons/favorite_button.dart';
 import '../room_selection/room_selection_screen.dart';
+import '../hostel_reviews/hostel_reviews_screen.dart';
 
 class HostelDetailsScreen extends StatelessWidget {
   final Hostel hostel;
@@ -48,7 +50,9 @@ class HostelDetailsScreen extends StatelessWidget {
                 _sectionHeading('About this hostel'),
                 const SizedBox(height: 10),
                 Text(
-                  '${hostel.name} is a student accommodation option located in ${hostel.area}. Explore the available room types and facilities before making your booking.',
+                  hostel.description?.trim().isNotEmpty == true
+                      ? hostel.description!
+                      : '${hostel.name} is a student accommodation option located in ${hostel.area}. Explore the available room types and facilities before making your booking.',
                   style: const TextStyle(
                     fontSize: 14,
                     height: 1.7,
@@ -64,9 +68,30 @@ class HostelDetailsScreen extends StatelessWidget {
                 const SizedBox(height: 13),
                 _facilities(),
                 const SizedBox(height: 25),
+                _sectionHeading('Reviews & Ratings'),
+                const SizedBox(height: 10),
+                OutlinedButton.icon(
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => HostelReviewsScreen(hostel: hostel),
+                    ),
+                  ),
+                  icon: const Icon(Icons.star_outline_rounded),
+                  label: const Text('Read or Write Reviews'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.primary,
+                    side: const BorderSide(color: AppColors.primary),
+                    minimumSize: const Size(double.infinity, 48),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(13),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 25),
                 _sectionHeading('Location'),
                 const SizedBox(height: 12),
-                _locationCard(),
+                _locationCard(context),
               ]),
             ),
           ),
@@ -83,7 +108,7 @@ class HostelDetailsScreen extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF315BE8), Color(0xFF172B62)],
+          colors: [Color(0xFF087F75), Color(0xFF172B2A)],
         ),
       ),
       child: Stack(
@@ -192,17 +217,26 @@ class HostelDetailsScreen extends StatelessWidget {
         const SizedBox(height: 15),
         Row(
           children: [
-            _infoChip(
-              Icons.star_rounded,
-              hostel.rating.toStringAsFixed(1),
-              AppColors.gold,
-            ),
-            const SizedBox(width: 10),
-            _infoChip(
-              Icons.near_me_outlined,
-              '${hostel.distanceKm.toStringAsFixed(1)} km away',
-              AppColors.primary,
-            ),
+            if (hostel.rating > 0)
+              _infoChip(
+                Icons.star_rounded,
+                hostel.rating.toStringAsFixed(1),
+                AppColors.gold,
+              )
+            else
+              _infoChip(
+                Icons.fiber_new_rounded,
+                'New listing',
+                AppColors.primary,
+              ),
+            if (!hostel.isOwnerListing) ...[
+              const SizedBox(width: 10),
+              _infoChip(
+                Icons.near_me_outlined,
+                '${hostel.distanceKm.toStringAsFixed(1)} km away',
+                AppColors.primary,
+              ),
+            ],
           ],
         ),
       ],
@@ -345,7 +379,7 @@ class HostelDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _locationCard() {
+  Widget _locationCard(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(17),
       decoration: BoxDecoration(
@@ -388,6 +422,35 @@ class HostelDetailsScreen extends StatelessWidget {
                     fontSize: 13,
                   ),
                 ),
+                if (hostel.contactPhone?.isNotEmpty == true) ...[
+                  const SizedBox(height: 7),
+                  Text(
+                    'Owner contact: ${hostel.contactPhone}',
+                    style: const TextStyle(fontSize: 11, color: AppColors.textSecondary),
+                  ),
+                ],
+                if (hostel.availableBeds != null) ...[
+                  const SizedBox(height: 5),
+                  Text(
+                    '${hostel.availableBeds} beds currently available',
+                    style: const TextStyle(fontSize: 11, color: AppColors.success, fontWeight: FontWeight.w600),
+                  ),
+                ],
+                if (hostel.googleMapsUrl?.isNotEmpty == true) ...[
+                  const SizedBox(height: 10),
+                  OutlinedButton.icon(
+                    onPressed: () async {
+                      await Clipboard.setData(ClipboardData(text: hostel.googleMapsUrl!));
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Google Maps link copied. Paste it into Google Maps to navigate.')),
+                        );
+                      }
+                    },
+                    icon: const Icon(Icons.map_outlined, size: 17),
+                    label: const Text('Copy Google Maps location'),
+                  ),
+                ],
               ],
             ),
           ),

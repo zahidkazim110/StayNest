@@ -4,6 +4,7 @@ import '../../core/theme/app_colors.dart';
 import '../../models/hostel.dart';
 import '../../models/hostel_activity_storage.dart';
 import '../hostel_details/hostel_details_screen.dart';
+import '../discovery/discovery_screen.dart';
 
 class SavedHostelsScreen extends StatefulWidget {
   const SavedHostelsScreen({super.key});
@@ -16,6 +17,24 @@ class _SavedHostelsScreenState extends State<SavedHostelsScreen> {
   List<Hostel> _favorites = [];
   List<Hostel> _recent = [];
   bool _loading = true;
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  List<Hostel> _filterHostels(List<Hostel> items) {
+    final query = _searchQuery.trim().toLowerCase();
+    if (query.isEmpty) return items;
+    return items.where((hostel) =>
+      hostel.name.toLowerCase().contains(query) ||
+      hostel.area.toLowerCase().contains(query) ||
+      hostel.facilities.any((facility) => facility.toLowerCase().contains(query))
+    ).toList();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -192,20 +211,60 @@ class _SavedHostelsScreenState extends State<SavedHostelsScreen> {
               child: ListView(
                 padding: const EdgeInsets.all(20),
                 children: [
-                  _sectionTitle('My Favorites', _favorites.length),
-                  if (_favorites.isEmpty)
-                    _emptyMessage(
-                      'No favorite hostels yet. Tap the heart on a hostel to save it.',
-                    )
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                      border: Border.all(color: AppColors.border),
+                    ),
+                    child: TextField(
+                      controller: _searchController,
+                      onChanged: (value) => setState(() => _searchQuery = value),
+                      decoration: InputDecoration(
+                        hintText: 'Search saved hostels or areas',
+                        prefixIcon: const Icon(Icons.search_rounded, color: AppColors.primary),
+                        suffixIcon: _searchQuery.isEmpty ? null : IconButton(
+                          tooltip: 'Clear search',
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() => _searchQuery = '');
+                          },
+                          icon: const Icon(Icons.close_rounded),
+                        ),
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 15),
+                      ),
+                    ),
+                  ),
+                  _sectionTitle('My Favorites', _filterHostels(_favorites).length),
+                  if (_filterHostels(_favorites).isEmpty)
+                    _emptyMessage(_favorites.isEmpty
+                      ? 'No favorite hostels yet. Save a place by tapping the heart on its details page.'
+                      : 'No saved hostels match your search.')
                   else
-                    ..._favorites.map(
+                    ..._filterHostels(_favorites).map(
                       (hostel) => _hostelTile(hostel, isFavorite: true),
                     ),
-                  _sectionTitle('Recently Viewed', _recent.length),
-                  if (_recent.isEmpty)
-                    _emptyMessage('Hostels you view will appear here.')
+                  if (_favorites.isEmpty && _searchQuery.isEmpty) ...[
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      height: 48,
+                      child: OutlinedButton.icon(
+                        onPressed: () => Navigator.push(context, MaterialPageRoute(
+                          builder: (_) => const DiscoveryScreen(),
+                        )),
+                        icon: const Icon(Icons.explore_outlined),
+                        label: const Text('Explore hostels'),
+                      ),
+                    ),
+                  ],
+                  _sectionTitle('Recently Viewed', _filterHostels(_recent).length),
+                  if (_filterHostels(_recent).isEmpty)
+                    _emptyMessage(_recent.isEmpty
+                      ? 'Hostels you open will appear here for quick access.'
+                      : 'No recently viewed hostels match your search.')
                   else
-                    ..._recent.map(
+                    ..._filterHostels(_recent).map(
                       (hostel) => _hostelTile(hostel, isFavorite: false),
                     ),
                 ],

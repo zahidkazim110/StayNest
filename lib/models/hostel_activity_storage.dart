@@ -21,6 +21,13 @@ class HostelActivityStorage {
       'rating': hostel.rating,
       'roomTypes': hostel.roomTypes.toList(),
       'facilities': hostel.facilities.toList(),
+      'googleMapsUrl': hostel.googleMapsUrl,
+      'contactPhone': hostel.contactPhone,
+      'description': hostel.description,
+      'availableBeds': hostel.availableBeds,
+      'isOwnerListing': hostel.isOwnerListing,
+      'roomPrices': hostel.roomPrices,
+      'roomAvailability': hostel.roomAvailability,
     };
   }
 
@@ -33,6 +40,17 @@ class HostelActivityStorage {
       rating: (map['rating'] as num?)?.toDouble() ?? 0,
       roomTypes: Set<String>.from(map['roomTypes'] ?? []),
       facilities: Set<String>.from(map['facilities'] ?? []),
+      googleMapsUrl: map['googleMapsUrl']?.toString(),
+      contactPhone: map['contactPhone']?.toString(),
+      description: map['description']?.toString(),
+      availableBeds: (map['availableBeds'] as num?)?.toInt(),
+      isOwnerListing: map['isOwnerListing'] == true,
+      roomPrices: map['roomPrices'] == null
+          ? null
+          : Map<String, int>.from(map['roomPrices'] as Map),
+      roomAvailability: map['roomAvailability'] == null
+          ? null
+          : Map<String, int>.from(map['roomAvailability'] as Map),
     );
   }
 

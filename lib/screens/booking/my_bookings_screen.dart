@@ -3,6 +3,7 @@
 import '../../core/theme/app_colors.dart';
 import '../../models/booking_record.dart';
 import '../../models/booking_storage.dart';
+import 'booking_timeline_screen.dart';
 
 class MyBookingsScreen extends StatefulWidget {
   const MyBookingsScreen({super.key});
@@ -30,12 +31,24 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F8FC),
+      backgroundColor: const Color(0xFFF6F7F3),
       appBar: AppBar(
         title: const Text(
           'My Bookings',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        actions: [
+          IconButton(
+            tooltip: 'Booking timeline',
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const BookingTimelineScreen(),
+              ),
+            ),
+            icon: const Icon(Icons.timeline_rounded),
+          ),
+        ],
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         elevation: 0,
