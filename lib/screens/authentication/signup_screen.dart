@@ -5,11 +5,15 @@ import '../../core/theme/app_colors.dart';
 import '../../models/auth_storage.dart';
 import '../../models/profile_storage.dart';
 import '../../models/student_profile.dart';
+import '../../models/user_role.dart';
 import '../home/home_screen.dart';
+import '../owner/owner_dashboard_screen.dart';
 import 'login_screen.dart';
 
 class SignupScreen extends StatefulWidget {
-  const SignupScreen({super.key});
+  final UserRole selectedRole;
+
+  const SignupScreen({super.key, this.selectedRole = UserRole.student});
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -44,7 +48,9 @@ class _SignupScreenState extends State<SignupScreen> {
       fullName: _nameController.text.trim(),
       email: _emailController.text.trim(),
       phoneNumber: _phoneController.text.trim(),
-      occupation: 'Student',
+      occupation: widget.selectedRole == UserRole.hostelOwner
+          ? 'Hostel Owner'
+          : 'Student',
       universityName: '',
       cnic: '',
     );
@@ -59,9 +65,13 @@ class _SignupScreenState extends State<SignupScreen> {
 
       if (!mounted) return;
 
+      final destination = widget.selectedRole == UserRole.hostelOwner
+          ? const OwnerDashboardScreen()
+          : const HomeScreen();
+
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
+        MaterialPageRoute(builder: (_) => destination),
       );
     } catch (e) {
       if (!mounted) return;
@@ -366,7 +376,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => const LoginScreen(),
+                                  builder: (_) => LoginScreen(selectedRole: widget.selectedRole),
                                 ),
                               );
                             },
