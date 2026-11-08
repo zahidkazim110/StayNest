@@ -71,6 +71,13 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
       final rent = listing.rooms.map((room) => room.monthlyRent)
           .reduce((a, b) => a < b ? a : b);
       final roomTypes = listing.rooms.map((room) => room.roomType).toSet();
+      final roomPrices = <String, int>{};
+      final roomAvailability = <String, int>{};
+      for (final room in listing.rooms) {
+        final oldPrice = roomPrices[room.roomType];
+        if (oldPrice == null || room.monthlyRent < oldPrice) roomPrices[room.roomType] = room.monthlyRent;
+        roomAvailability.update(room.roomType, (value) => value + room.availableBeds, ifAbsent: () => room.availableBeds);
+      }
       final availableBeds = listing.rooms.fold<int>(0, (sum, room) => sum + room.availableBeds);
       final facilities = <String>{};
       for (final facility in listing.facilities) {
@@ -106,6 +113,8 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
         description: listing.description,
         availableBeds: availableBeds,
         isOwnerListing: true,
+        roomPrices: roomPrices,
+        roomAvailability: roomAvailability,
       ));
     }
     setState(() {
