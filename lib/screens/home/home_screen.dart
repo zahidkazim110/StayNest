@@ -1,5 +1,7 @@
 import '../profile/student_profile_screen.dart';
 import '../notifications/notification_center_screen.dart';
+import '../ai_assistant/ai_assistant_screen.dart';
+import '../hostel_comparison/hostel_comparison_screen.dart';
 
 import 'package:flutter/material.dart';
 
@@ -192,6 +194,46 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => AIAssistantScreen(hostels: hostels),
+                              ),
+                            ),
+                            icon: const Icon(Icons.chat_bubble_outline_rounded, size: 18),
+                            label: const Text('AI Assistant'),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: AppColors.primary,
+                              side: const BorderSide(color: AppColors.primary),
+                              padding: const EdgeInsets.symmetric(vertical: 13),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => HostelComparisonScreen(hostels: hostels),
+                              ),
+                            ),
+                            icon: const Icon(Icons.compare_arrows_rounded, size: 18),
+                            label: const Text('Compare'),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: AppColors.primary,
+                              side: const BorderSide(color: AppColors.primary),
+                              padding: const EdgeInsets.symmetric(vertical: 13),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 26),
                     _sectionTitle('Recommended Hostels'),
