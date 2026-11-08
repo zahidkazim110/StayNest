@@ -1,4 +1,5 @@
 import '../profile/student_profile_screen.dart';
+import '../notifications/notification_center_screen.dart';
 
 import 'package:flutter/material.dart';
 
@@ -308,8 +309,11 @@ class _HomeScreenState extends State<HomeScreen> {
         const Spacer(),
         IconButton(
           onPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Notifications coming soon.')),
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const NotificationCenterScreen(),
+              ),
             );
           },
           icon: const Icon(Icons.notifications_none_rounded),
