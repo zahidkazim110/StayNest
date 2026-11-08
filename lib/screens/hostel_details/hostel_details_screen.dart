@@ -50,7 +50,9 @@ class HostelDetailsScreen extends StatelessWidget {
                 _sectionHeading('About this hostel'),
                 const SizedBox(height: 10),
                 Text(
-                  hostel.description?.trim().isNotEmpty == true\n                      ? hostel.description!\n                      : '${hostel.name} is a student accommodation option located in ${hostel.area}. Explore the available room types and facilities before making your booking.',
+                  hostel.description?.trim().isNotEmpty == true
+                      ? hostel.description!
+                      : '${hostel.name} is a student accommodation option located in ${hostel.area}. Explore the available room types and facilities before making your booking.',
                   style: const TextStyle(
                     fontSize: 14,
                     height: 1.7,
@@ -414,14 +416,14 @@ class HostelDetailsScreen extends StatelessWidget {
                 if (hostel.contactPhone?.isNotEmpty == true) ...[
                   const SizedBox(height: 7),
                   Text(
-                    'Owner contact: \${hostel.contactPhone}',
+                    'Owner contact: ${hostel.contactPhone}',
                     style: const TextStyle(fontSize: 11, color: AppColors.textSecondary),
                   ),
                 ],
                 if (hostel.availableBeds != null) ...[
                   const SizedBox(height: 5),
                   Text(
-                    '\${hostel.availableBeds} beds currently available',
+                    '${hostel.availableBeds} beds currently available',
                     style: const TextStyle(fontSize: 11, color: AppColors.success, fontWeight: FontWeight.w600),
                   ),
                 ],
