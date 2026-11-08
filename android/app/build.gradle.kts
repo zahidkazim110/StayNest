@@ -4,6 +4,19 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+val signingValues = listOf(
+    providers.environmentVariable("ANDROID_KEYSTORE_PATH").orNull,
+    providers.environmentVariable("ANDROID_KEYSTORE_PASSWORD").orNull,
+    providers.environmentVariable("ANDROID_KEY_ALIAS").orNull,
+    providers.environmentVariable("ANDROID_KEY_PASSWORD").orNull,
+)
+val hasAnyReleaseSigningValue = signingValues.any { !it.isNullOrBlank() }
+val hasCompleteReleaseSigning = signingValues.all { !it.isNullOrBlank() }
+
+require(!hasAnyReleaseSigningValue || hasCompleteReleaseSigning) {
+    "Release signing is partially configured. Set all four ANDROID_KEYSTORE_* / ANDROID_KEY_* environment variables."
+}
+
 android {
     namespace = "com.example.staynest"
     compileSdk = flutter.compileSdkVersion
@@ -29,11 +42,26 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        create("release") {
+            if (hasCompleteReleaseSigning) {
+                storeFile = file(signingValues[0]!!)
+                storePassword = signingValues[1]
+                keyAlias = signingValues[2]
+                keyPassword = signingValues[3]
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            // A debug-signed APK is produced only when no private release key is
+            // configured. Add the documented GitHub Actions secrets for distribution.
+            signingConfig = if (hasCompleteReleaseSigning) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
         }
     }
 }
