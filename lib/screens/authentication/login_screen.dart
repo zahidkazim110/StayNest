@@ -3,12 +3,16 @@ import 'package:flutter/material.dart';
 import '../../components/buttons/primary_button.dart';
 import '../../core/theme/app_colors.dart';
 import '../../models/auth_storage.dart';
+import '../../models/user_role.dart';
 import '../home/home_screen.dart';
+import '../owner/owner_dashboard_screen.dart';
 import 'signup_screen.dart';
 import 'forgot_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final UserRole selectedRole;
+
+  const LoginScreen({super.key, this.selectedRole = UserRole.student});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -48,9 +52,13 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
 
+      final destination = widget.selectedRole == UserRole.hostelOwner
+          ? const OwnerDashboardScreen()
+          : const HomeScreen();
+
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
+        MaterialPageRoute(builder: (_) => destination),
       );
     } catch (e) {
       if (!mounted) return;
@@ -335,7 +343,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => const SignupScreen(),
+                                  builder: (_) => SignupScreen(selectedRole: widget.selectedRole),
                                 ),
                               );
                             },
