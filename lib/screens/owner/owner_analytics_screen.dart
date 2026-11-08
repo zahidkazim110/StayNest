@@ -79,7 +79,7 @@ class _OwnerAnalyticsScreenState extends State<OwnerAnalyticsScreen> {
                       style: TextStyle(color: Colors.white70, fontSize: 12)),
                     const SizedBox(height: 7),
                     Text('PKR ${monthlyEstimate.toString().replaceAllMapped(
-                      RegExp(r'(\\d)(?=(\\d{3})+(?!\\d))'), (m) => '${m[1]},')}',
+                      RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (m) => '${m[1]},')}',
                       style: const TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.w800)),
                     const SizedBox(height: 5),
                     const Text('Estimate only; based on occupied beds × monthly rent per bed.',
