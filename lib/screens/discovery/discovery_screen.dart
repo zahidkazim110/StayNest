@@ -231,7 +231,9 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
                             .map((item) => DropdownMenuItem(value: item, child: Text(item)))
                             .toList(),
                         onChanged: (value) {
-                          if (value != null) setModalState(() => sortBy = value);
+                          if (value != null) {
+                            setModalState(() => sortBy = value);
+                          }
                         },
                       ),
                       const SizedBox(height: 22),
