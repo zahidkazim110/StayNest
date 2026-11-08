@@ -485,7 +485,9 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
     // locally saved profile information or booking history.
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (_) => const LoginScreen()),
+      MaterialPageRoute(
+        builder: (_) => const LoginScreen(selectedRole: UserRole.student),
+      ),
       (route) => false,
     );
   }
