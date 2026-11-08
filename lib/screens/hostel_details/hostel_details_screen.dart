@@ -217,17 +217,26 @@ class HostelDetailsScreen extends StatelessWidget {
         const SizedBox(height: 15),
         Row(
           children: [
-            _infoChip(
-              Icons.star_rounded,
-              hostel.rating.toStringAsFixed(1),
-              AppColors.gold,
-            ),
-            const SizedBox(width: 10),
-            _infoChip(
-              Icons.near_me_outlined,
-              '${hostel.distanceKm.toStringAsFixed(1)} km away',
-              AppColors.primary,
-            ),
+            if (hostel.rating > 0)
+              _infoChip(
+                Icons.star_rounded,
+                hostel.rating.toStringAsFixed(1),
+                AppColors.gold,
+              )
+            else
+              _infoChip(
+                Icons.fiber_new_rounded,
+                'New listing',
+                AppColors.primary,
+              ),
+            if (!hostel.isOwnerListing) ...[
+              const SizedBox(width: 10),
+              _infoChip(
+                Icons.near_me_outlined,
+                '${hostel.distanceKm.toStringAsFixed(1)} km away',
+                AppColors.primary,
+              ),
+            ],
           ],
         ),
       ],
