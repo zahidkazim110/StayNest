@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../models/user_role.dart';
 import 'login_screen.dart';
 
 class RoleSelectionScreen extends StatelessWidget {
@@ -104,7 +105,9 @@ class RoleSelectionScreen extends StatelessWidget {
                 tag: 'FIND A PLACE TO STAY',
                 onTap: () {
                   Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (_) => const LoginScreen()),
+                    MaterialPageRoute(
+                      builder: (_) => const LoginScreen(selectedRole: UserRole.student),
+                    ),
                   );
                 },
               ),
@@ -117,7 +120,9 @@ class RoleSelectionScreen extends StatelessWidget {
                 tag: 'MANAGE YOUR PROPERTY',
                 onTap: () {
                   Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (_) => const LoginScreen()),
+                    MaterialPageRoute(
+                      builder: (_) => const LoginScreen(selectedRole: UserRole.hostelOwner),
+                    ),
                   );
                 },
               ),
