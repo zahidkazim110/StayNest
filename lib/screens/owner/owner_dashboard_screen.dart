@@ -182,7 +182,7 @@ class OwnerDashboardScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF4775FF), AppColors.primary],
+                    colors: [Color(0xFF087F75), AppColors.primary],
                   ),
                   borderRadius: BorderRadius.circular(18),
                 ),
