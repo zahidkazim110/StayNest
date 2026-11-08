@@ -4,6 +4,7 @@ import '../../core/theme/app_colors.dart';
 import '../../models/hostel.dart';
 import '../../components/buttons/favorite_button.dart';
 import '../room_selection/room_selection_screen.dart';
+import '../hostel_reviews/hostel_reviews_screen.dart';
 
 class HostelDetailsScreen extends StatelessWidget {
   final Hostel hostel;
@@ -63,6 +64,27 @@ class HostelDetailsScreen extends StatelessWidget {
                 _sectionHeading('Facilities & Amenities'),
                 const SizedBox(height: 13),
                 _facilities(),
+                const SizedBox(height: 25),
+                _sectionHeading('Reviews & Ratings'),
+                const SizedBox(height: 10),
+                OutlinedButton.icon(
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => HostelReviewsScreen(hostel: hostel),
+                    ),
+                  ),
+                  icon: const Icon(Icons.star_outline_rounded),
+                  label: const Text('Read or Write Reviews'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.primary,
+                    side: const BorderSide(color: AppColors.primary),
+                    minimumSize: const Size(double.infinity, 48),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(13),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 25),
                 _sectionHeading('Location'),
                 const SizedBox(height: 12),
