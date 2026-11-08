@@ -1,17 +1,16 @@
-import '../profile/student_profile_screen.dart';
-import '../notifications/notification_center_screen.dart';
-import '../ai_assistant/ai_assistant_screen.dart';
-import '../hostel_comparison/hostel_comparison_screen.dart';
-
 import 'package:flutter/material.dart';
 
 import '../../components/cards/hostel_card.dart';
 import '../../core/theme/app_colors.dart';
 import '../../models/hostel.dart';
-import '../saved_hostels/saved_hostels_screen.dart';
+import '../ai_assistant/ai_assistant_screen.dart';
 import '../ai_recommendation/ai_recommendation_screen.dart';
-import '../hostel_details/hostel_details_screen.dart';
 import '../discovery/discovery_screen.dart';
+import '../hostel_comparison/hostel_comparison_screen.dart';
+import '../hostel_details/hostel_details_screen.dart';
+import '../notifications/notification_center_screen.dart';
+import '../profile/student_profile_screen.dart';
+import '../saved_hostels/saved_hostels_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,7 +22,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String selectedCity = 'Islamabad';
   String selectedRoom = 'All';
-
   final searchController = TextEditingController();
 
   final List<Hostel> hostels = const [
@@ -61,17 +59,13 @@ class _HomeScreenState extends State<HomeScreen> {
       final cityMatch = hostel.area.toLowerCase().contains(
         selectedCity.toLowerCase(),
       );
-
       final roomMatch =
           selectedRoom == 'All' || hostel.roomTypes.contains(selectedRoom);
-
       final query = searchController.text.trim().toLowerCase();
-
       final searchMatch =
           query.isEmpty ||
           hostel.name.toLowerCase().contains(query) ||
           hostel.area.toLowerCase().contains(query);
-
       return cityMatch && roomMatch && searchMatch;
     }).toList();
   }
@@ -80,6 +74,38 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const DiscoveryScreen()),
+    );
+  }
+
+  void openSavedHostels() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const SavedHostelsScreen()),
+    );
+  }
+
+  void openAiRecommendations() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => AIRecommendationScreen(hostels: hostels),
+      ),
+    );
+  }
+
+  void openAiAssistant() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => AIAssistantScreen(hostels: hostels)),
+    );
+  }
+
+  void openComparison() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => HostelComparisonScreen(hostels: hostels),
+      ),
     );
   }
 
@@ -97,182 +123,67 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
           slivers: [
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _header(),
-                    const SizedBox(height: 30),
-                    const Text(
-                      'Find Your Perfect',
-                      style: TextStyle(
-                        fontSize: 27,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    const Text(
-                      'Student Hostel',
-                      style: TextStyle(
-                        fontSize: 27,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Discover comfortable and affordable student accommodation.',
-                      style: TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: 13,
-                      ),
-                    ),
-                    const SizedBox(height: 22),
-                    _searchBar(),
-                    const SizedBox(height: 25),
-                    _sectionTitle('Choose Your City'),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        _cityButton('Islamabad'),
-                        const SizedBox(width: 10),
-                        _cityButton('Rawalpindi'),
-                      ],
-                    ),
-                    const SizedBox(height: 25),
-                    _sectionTitle('Explore Room Types'),
-                    const SizedBox(height: 12),
-                    _roomCategories(),
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const SavedHostelsScreen(),
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.favorite_rounded),
-                        label: const Text('My Favorites & Recently Viewed'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) =>
-                                  AIRecommendationScreen(hostels: hostels),
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.auto_awesome_rounded),
-                        label: const Text('AI Hostel Recommendations'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => AIAssistantScreen(hostels: hostels),
-                              ),
-                            ),
-                            icon: const Icon(Icons.chat_bubble_outline_rounded, size: 18),
-                            label: const Text('AI Assistant'),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: AppColors.primary,
-                              side: const BorderSide(color: AppColors.primary),
-                              padding: const EdgeInsets.symmetric(vertical: 13),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => HostelComparisonScreen(hostels: hostels),
-                              ),
-                            ),
-                            icon: const Icon(Icons.compare_arrows_rounded, size: 18),
-                            label: const Text('Compare'),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: AppColors.primary,
-                              side: const BorderSide(color: AppColors.primary),
-                              padding: const EdgeInsets.symmetric(vertical: 13),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 26),
-                    _sectionTitle('Recommended Hostels'),
-                    const SizedBox(height: 5),
-                    const Text(
-                      'Find a place that feels like home.',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-                  ],
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+                child: _header(),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 22, 20, 0),
+                child: _hero(),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                child: _searchBar(),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 27, 20, 0),
+                child: _citySection(),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 25, 20, 0),
+                child: _roomSection(),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 27, 20, 0),
+                child: _toolsSection(),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 28, 20, 15),
+                child: _sectionHeading(
+                  'Recommended for you',
+                  subtitle: 'Explore places that could feel like home.',
+                  trailing: 'Explore all',
+                  onTrailingTap: openDiscovery,
                 ),
               ),
             ),
             if (results.isEmpty)
-              const SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.all(30),
-                  child: Center(
-                    child: Text(
-                      'No hostels found. Try another search or filter.',
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              )
+              SliverToBoxAdapter(child: _emptyState())
             else
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate((context, index) {
                     final hostel = results[index];
-
                     return HostelCard(
                       name: hostel.name,
                       location: hostel.area,
-                      price: 'PKR ${hostel.monthlyRent} / month',
+                      price: 'PKR ${_formatPrice(hostel.monthlyRent)} / mo',
                       rating: hostel.rating,
                       imageUrl: '',
                       onTap: () {
@@ -289,23 +200,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 30),
-                child: SizedBox(
-                  height: 52,
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: openDiscovery,
-                    icon: const Icon(Icons.map_outlined),
-                    label: const Text('Explore All Hostels'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    ),
-                  ),
-                ),
+                padding: const EdgeInsets.fromLTRB(20, 4, 20, 28),
+                child: _bottomDiscoveryCard(),
               ),
             ),
           ],
@@ -321,130 +217,514 @@ class _HomeScreenState extends State<HomeScreen> {
           height: 46,
           width: 46,
           decoration: BoxDecoration(
-            color: AppColors.primary,
-            borderRadius: BorderRadius.circular(14),
+            gradient: const LinearGradient(
+              colors: [AppColors.primary, AppColors.primaryDark],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(15),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withValues(alpha: 0.20),
+                blurRadius: 14,
+                offset: const Offset(0, 6),
+              ),
+            ],
           ),
           child: const Icon(
             Icons.home_work_rounded,
             color: Colors.white,
-            size: 25,
+            size: 24,
           ),
         ),
         const SizedBox(width: 11),
-        const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'StayNest',
-              style: TextStyle(
-                fontSize: 21,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
+        const Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'StayNest',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.5,
+                  color: AppColors.textPrimary,
+                ),
               ),
-            ),
-            Text(
-              'Find your student home',
-              style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
-            ),
-          ],
-        ),
-        const Spacer(),
-        IconButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const NotificationCenterScreen(),
+              SizedBox(height: 2),
+              Text(
+                'Your student living partner',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            );
-          },
-          icon: const Icon(Icons.notifications_none_rounded),
+            ],
+          ),
         ),
-        IconButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const StudentProfileScreen()),
-            );
-          },
-          icon: const Icon(Icons.person_outline_rounded),
+        _headerAction(
+          icon: Icons.notifications_none_rounded,
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const NotificationCenterScreen(),
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        _headerAction(
+          icon: Icons.person_outline_rounded,
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const StudentProfileScreen()),
+          ),
         ),
       ],
     );
   }
 
-  Widget _searchBar() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: AppColors.border),
+  Widget _headerAction({
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: AppColors.surface,
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: Container(
+          height: 43,
+          width: 43,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Icon(icon, color: AppColors.textPrimary, size: 21),
+        ),
       ),
-      child: Row(
+    );
+  }
+
+  Widget _hero() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(21, 22, 19, 20),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF315BE8), Color(0xFF2449C8), Color(0xFF172B62)],
+        ),
+        borderRadius: BorderRadius.circular(25),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.20),
+            blurRadius: 22,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Stack(
         children: [
-          const Icon(Icons.search, color: AppColors.primary),
-          const SizedBox(width: 10),
-          Expanded(
-            child: TextField(
-              controller: searchController,
-              onChanged: (_) => setState(() {}),
-              decoration: const InputDecoration(
-                hintText: 'Search hostel or location...',
-                border: InputBorder.none,
+          Positioned(
+            right: -26,
+            top: -37,
+            child: Container(
+              height: 160,
+              width: 160,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.10),
+                  width: 24,
+                ),
               ),
             ),
           ),
-          IconButton(
-            onPressed: openDiscovery,
-            icon: const Icon(Icons.tune_rounded, color: AppColors.primary),
+          Positioned(
+            right: 8,
+            bottom: -24,
+            child: Icon(
+              Icons.apartment_rounded,
+              size: 118,
+              color: Colors.white.withValues(alpha: 0.10),
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.14),
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.18),
+                  ),
+                ),
+                child: const Text(
+                  'STUDENT LIVING, SIMPLIFIED',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 9,
+                    letterSpacing: 1.1,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 17),
+              const Text(
+                'Find a place\nto call home.',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  height: 1.12,
+                  letterSpacing: -0.6,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 9),
+              Text(
+                'Discover student hostels around your campus.',
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.82),
+                  fontSize: 12,
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 18),
+              SizedBox(
+                height: 42,
+                child: ElevatedButton(
+                  onPressed: openDiscovery,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: AppColors.primaryDark,
+                    minimumSize: const Size(145, 42),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(13),
+                    ),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Explore hostels',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      SizedBox(width: 7),
+                      Icon(Icons.arrow_forward_rounded, size: 16),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _sectionTitle(String title) {
-    return Text(
-      title,
-      style: const TextStyle(
-        fontSize: 17,
-        fontWeight: FontWeight.bold,
-        color: AppColors.textPrimary,
+  Widget _searchBar() {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(15, 4, 7, 4),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(17),
+        border: Border.all(color: AppColors.border),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x08172B4D),
+            blurRadius: 16,
+            offset: Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.search_rounded, color: AppColors.primary, size: 23),
+          const SizedBox(width: 10),
+          Expanded(
+            child: TextField(
+              controller: searchController,
+              onChanged: (_) => setState(() {}),
+              textInputAction: TextInputAction.search,
+              decoration: const InputDecoration(
+                hintText: 'Search by hostel or location',
+                border: InputBorder.none,
+                filled: false,
+                contentPadding: EdgeInsets.symmetric(vertical: 13),
+              ),
+            ),
+          ),
+          Material(
+            color: AppColors.primaryLight,
+            borderRadius: BorderRadius.circular(12),
+            child: InkWell(
+              onTap: openDiscovery,
+              borderRadius: BorderRadius.circular(12),
+              child: const SizedBox(
+                height: 42,
+                width: 42,
+                child: Icon(Icons.tune_rounded, color: AppColors.primary),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _cityButton(String city) {
-    final selected = selectedCity == city;
+  Widget _citySection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _sectionHeading('Choose your city'),
+        const SizedBox(height: 13),
+        Row(
+          children: [
+            _cityChip('Islamabad'),
+            const SizedBox(width: 10),
+            _cityChip('Rawalpindi'),
+          ],
+        ),
+      ],
+    );
+  }
 
+  Widget _cityChip(String city) {
+    final selected = selectedCity == city;
     return Expanded(
-      child: GestureDetector(
-        onTap: () => setState(() => selectedCity = city),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 13),
-          decoration: BoxDecoration(
-            color: selected ? AppColors.primary : Colors.white,
-            borderRadius: BorderRadius.circular(13),
-            border: Border.all(
-              color: selected ? AppColors.primary : AppColors.border,
+      child: Material(
+        color: selected ? AppColors.primary : AppColors.surface,
+        borderRadius: BorderRadius.circular(14),
+        child: InkWell(
+          onTap: () => setState(() => selectedCity = city),
+          borderRadius: BorderRadius.circular(14),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 13),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: selected ? AppColors.primary : AppColors.border,
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.location_on_outlined,
+                  size: 17,
+                  color: selected ? Colors.white : AppColors.textSecondary,
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  city,
+                  style: TextStyle(
+                    color: selected ? Colors.white : AppColors.textPrimary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
             ),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.location_on_outlined,
-                color: selected ? Colors.white : AppColors.textSecondary,
-                size: 18,
+        ),
+      ),
+    );
+  }
+
+  Widget _roomSection() {
+    const categories = [
+      ('All', Icons.grid_view_rounded),
+      ('Single', Icons.person_outline_rounded),
+      ('Double', Icons.people_outline_rounded),
+      ('Shared', Icons.groups_2_outlined),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _sectionHeading('What room suits you?'),
+        const SizedBox(height: 13),
+        Row(
+          children: categories.map((category) {
+            final selected = selectedRoom == category.$1;
+            return Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 7),
+                child: Material(
+                  color: selected ? AppColors.primaryLight : AppColors.surface,
+                  borderRadius: BorderRadius.circular(15),
+                  child: InkWell(
+                    onTap: () => setState(() => selectedRoom = category.$1),
+                    borderRadius: BorderRadius.circular(15),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 13,
+                        horizontal: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(
+                          color: selected ? AppColors.primary : AppColors.border,
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Icon(category.$2, color: AppColors.primary, size: 21),
+                          const SizedBox(height: 7),
+                          Text(
+                            category.$1,
+                            style: const TextStyle(
+                              color: AppColors.textPrimary,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              const SizedBox(width: 5),
-              Text(
-                city,
-                style: TextStyle(
-                  color: selected ? Colors.white : AppColors.textPrimary,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12,
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _toolsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _sectionHeading(
+          'Make your search easier',
+          subtitle: 'Helpful tools for finding the right stay.',
+        ),
+        const SizedBox(height: 13),
+        Row(
+          children: [
+            Expanded(
+              child: _toolCard(
+                icon: Icons.auto_awesome_rounded,
+                title: 'AI picks',
+                subtitle: 'Personalised matches',
+                onTap: openAiRecommendations,
+                accent: const Color(0xFF7357D8),
+                tint: const Color(0xFFF1EDFF),
+              ),
+            ),
+            const SizedBox(width: 11),
+            Expanded(
+              child: _toolCard(
+                icon: Icons.favorite_rounded,
+                title: 'Saved',
+                subtitle: 'Your shortlist',
+                onTap: openSavedHostels,
+                accent: const Color(0xFFE05C78),
+                tint: const Color(0xFFFFEEF2),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 11),
+        Row(
+          children: [
+            Expanded(
+              child: _toolCard(
+                icon: Icons.chat_bubble_outline_rounded,
+                title: 'AI assistant',
+                subtitle: 'Ask a question',
+                onTap: openAiAssistant,
+                accent: const Color(0xFF168B83),
+                tint: const Color(0xFFE8F7F5),
+              ),
+            ),
+            const SizedBox(width: 11),
+            Expanded(
+              child: _toolCard(
+                icon: Icons.compare_arrows_rounded,
+                title: 'Compare',
+                subtitle: 'Check your options',
+                onTap: openComparison,
+                accent: AppColors.primary,
+                tint: AppColors.primaryLight,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _toolCard({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+    required Color accent,
+    required Color tint,
+  }) {
+    return Material(
+      color: AppColors.surface,
+      borderRadius: BorderRadius.circular(17),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(17),
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(17),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Row(
+            children: [
+              Container(
+                height: 40,
+                width: 40,
+                decoration: BoxDecoration(
+                  color: tint,
+                  borderRadius: BorderRadius.circular(13),
+                ),
+                child: Icon(icon, color: accent, size: 20),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      subtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 9,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -454,51 +734,167 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _roomCategories() {
-    final categories = [
-      {'name': 'All', 'icon': Icons.grid_view_rounded},
-      {'name': 'Single', 'icon': Icons.person_outline},
-      {'name': 'Double', 'icon': Icons.people_outline},
-      {'name': 'Shared', 'icon': Icons.groups_outlined},
-    ];
-
+  Widget _sectionHeading(
+    String title, {
+    String? subtitle,
+    String? trailing,
+    VoidCallback? onTrailingTap,
+  }) {
     return Row(
-      children: categories.map((category) {
-        final name = category['name'] as String;
-        final icon = category['icon'] as IconData;
-        final selected = selectedRoom == name;
-
-        return Expanded(
-          child: GestureDetector(
-            onTap: () => setState(() => selectedRoom = name),
-            child: Container(
-              margin: const EdgeInsets.only(right: 7),
-              padding: const EdgeInsets.symmetric(vertical: 13),
-              decoration: BoxDecoration(
-                color: selected ? AppColors.primaryLight : Colors.white,
-                borderRadius: BorderRadius.circular(13),
-                border: Border.all(
-                  color: selected ? AppColors.primary : AppColors.border,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.2,
                 ),
               ),
-              child: Column(
-                children: [
-                  Icon(icon, color: AppColors.primary, size: 23),
-                  const SizedBox(height: 7),
-                  Text(
-                    name,
-                    style: const TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
-                    ),
+              if (subtitle != null) ...[
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 11,
                   ),
-                ],
+                ),
+              ],
+            ],
+          ),
+        ),
+        if (trailing != null)
+          TextButton(
+            onPressed: onTrailingTap,
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              minimumSize: const Size(0, 36),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: Text(
+              trailing,
+              style: const TextStyle(
+                color: AppColors.primary,
+                fontSize: 11,
+                fontWeight: FontWeight.w800,
               ),
             ),
           ),
-        );
-      }).toList(),
+      ],
+    );
+  }
+
+  Widget _emptyState() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: const Column(
+          children: [
+            Icon(
+              Icons.search_off_rounded,
+              color: AppColors.textMuted,
+              size: 38,
+            ),
+            SizedBox(height: 10),
+            Text(
+              'No hostels found',
+              style: TextStyle(
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.w800,
+                fontSize: 15,
+              ),
+            ),
+            SizedBox(height: 5),
+            Text(
+              'Try another city, room type or search term.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _bottomDiscoveryCard() {
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceSecondary,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Row(
+        children: [
+          Container(
+            height: 46,
+            width: 46,
+            decoration: BoxDecoration(
+              color: AppColors.primaryLight,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: const Icon(
+              Icons.travel_explore_rounded,
+              color: AppColors.primary,
+            ),
+          ),
+          const SizedBox(width: 13),
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Still exploring?',
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                SizedBox(height: 3),
+                Text(
+                  'See more available hostel options.',
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 10,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          IconButton.filled(
+            onPressed: openDiscovery,
+            style: IconButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+            ),
+            icon: const Icon(Icons.arrow_forward_rounded, size: 18),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatPrice(int value) {
+    return value.toString().replaceAllMapped(
+      RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+      (match) => (match[1] ?? '') + ',',
     );
   }
 }
