@@ -315,7 +315,7 @@ class _HomeScreenState extends State<HomeScreen> {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF315BE8), Color(0xFF2449C8), Color(0xFF172B62)],
+          colors: [Color(0xFF087F75), Color(0xFF075E57), Color(0xFF172B2A)],
         ),
         borderRadius: BorderRadius.circular(25),
         boxShadow: [
@@ -443,7 +443,7 @@ class _HomeScreenState extends State<HomeScreen> {
         border: Border.all(color: AppColors.border),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x08172B4D),
+            color: Color(0x14172B2A),
             blurRadius: 16,
             offset: Offset(0, 5),
           ),
@@ -621,8 +621,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 title: 'AI picks',
                 subtitle: 'Personalised matches',
                 onTap: openAiRecommendations,
-                accent: const Color(0xFF7357D8),
-                tint: const Color(0xFFF1EDFF),
+                accent: const Color(0xFF4D9C8D),
+                tint: const Color(0xFFE1F3EF),
               ),
             ),
             const SizedBox(width: 11),
@@ -647,8 +647,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 title: 'AI assistant',
                 subtitle: 'Ask a question',
                 onTap: openAiAssistant,
-                accent: const Color(0xFF168B83),
-                tint: const Color(0xFFE8F7F5),
+                accent: const Color(0xFF087F75),
+                tint: const Color(0xFFE1F3EF),
               ),
             ),
             const SizedBox(width: 11),
