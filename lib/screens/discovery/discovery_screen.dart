@@ -6,8 +6,8 @@ import '../../models/hostel.dart';
 import '../../models/hostel_activity_storage.dart';
 import '../hostel_details/hostel_details_screen.dart';
 
-const Color mapBlue = Color(0xFF315BE8);
-const Color mapNavy = Color(0xFF101B36);
+const Color mapBlue = Color(0xFF087F75);
+const Color mapNavy = Color(0xFF142927);
 
 class DiscoveryScreen extends StatefulWidget {
   const DiscoveryScreen({super.key});
@@ -148,7 +148,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
           builder: (context, setModalState) {
             return Container(
               decoration: const BoxDecoration(
-                color: Color(0xFFF8FAFF),
+                color: Color(0xFFF6F7F3),
                 borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
               ),
               padding: EdgeInsets.fromLTRB(
@@ -213,7 +213,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(13),
-                            borderSide: const BorderSide(color: Color(0xFFE5EAF4)),
+                            borderSide: const BorderSide(color: Color(0xFFE3EAE5)),
                           ),
                         ),
                       ),
@@ -290,7 +290,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
                           return ChoiceChip(
                             label: Text(type),
                             selected: selectedRoomType == type,
-                            selectedColor: const Color(0xFFDCE5FF),
+                            selectedColor: const Color(0xFFDCEFE9),
                             onSelected: (_) {
                               setModalState(() {
                                 selectedRoomType = type;
@@ -527,7 +527,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
                     offset: Offset(0, bounce),
                     child: const Icon(
                       Icons.location_on_rounded,
-                      color: Color(0xFFFFC45B),
+                      color: Color(0xFFD8A64E),
                       size: 43,
                       shadows: [Shadow(color: Colors.orange, blurRadius: 22)],
                     ),
@@ -546,7 +546,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
                   vertical: 9,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xDD172746),
+                  color: const Color(0xDD172B2A),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: Colors.white12),
                 ),
@@ -554,7 +554,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
                   children: [
                     const Icon(
                       Icons.radar_rounded,
-                      color: Color(0xFF6CA8FF),
+                      color: Color(0xFF65A99B),
                       size: 17,
                     ),
                     const SizedBox(width: 7),
@@ -588,7 +588,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
         duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          color: active ? mapBlue : const Color(0xCC172746),
+          color: active ? mapBlue : const Color(0xCC172B2A),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: active ? Colors.white30 : Colors.white12),
         ),
@@ -612,7 +612,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
         width: double.infinity,
         padding: const EdgeInsets.all(24),
         decoration: const BoxDecoration(
-          color: Color(0xFFF8FAFF),
+          color: Color(0xFFF6F7F3),
           borderRadius: BorderRadius.vertical(top: Radius.circular(27)),
         ),
         child: const Text(
@@ -637,7 +637,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
               width: double.infinity,
               padding: const EdgeInsets.fromLTRB(20, 18, 20, 22),
               decoration: const BoxDecoration(
-                color: Color(0xFFF8FAFF),
+                color: Color(0xFFF6F7F3),
                 borderRadius: BorderRadius.vertical(top: Radius.circular(27)),
               ),
               child: Column(
@@ -673,7 +673,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(18),
-                      border: Border.all(color: const Color(0xFFE9EDFA)),
+                      border: Border.all(color: const Color(0xFFEDF2EF)),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: .04),
@@ -688,7 +688,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
                           height: 72,
                           width: 72,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFE8EEFF),
+                            color: const Color(0xFFE1F3EF),
                             borderRadius: BorderRadius.circular(14),
                           ),
                           child: const Icon(
@@ -785,7 +785,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
                             margin: const EdgeInsets.only(right: 7),
                             padding: const EdgeInsets.symmetric(vertical: 11),
                             decoration: BoxDecoration(
-                              color: active ? mapBlue : const Color(0xFFEAF0FF),
+                              color: active ? mapBlue : const Color(0xFFE1F3EF),
                               borderRadius: BorderRadius.circular(11),
                             ),
                             child: Center(
@@ -870,7 +870,7 @@ class HostelMarker extends StatelessWidget {
         height: 43,
         width: 43,
         decoration: BoxDecoration(
-          color: active ? const Color(0xFFFFC45B) : mapBlue,
+          color: active ? const Color(0xFFD8A64E) : mapBlue,
           shape: BoxShape.circle,
           border: Border.all(color: Colors.white, width: 3),
           boxShadow: [
@@ -910,7 +910,7 @@ class MapPainter extends CustomPainter {
         ..shader = const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF14294A), Color(0xFF0A142B), Color(0xFF192E50)],
+          colors: [Color(0xFF193B38), Color(0xFF102321), Color(0xFF21433F)],
         ).createShader(rect),
     );
 
@@ -929,13 +929,13 @@ class MapPainter extends CustomPainter {
 
     // Roads
     final roadPaint = Paint()
-      ..color = const Color(0xFF5274A5).withValues(alpha: .4)
+      ..color = const Color(0xFF668A83).withValues(alpha: .4)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 4
       ..strokeCap = StrokeCap.round;
 
     final roadGlow = Paint()
-      ..color = const Color(0xFF438EFF).withValues(alpha: .15)
+      ..color = const Color(0xFF087F75).withValues(alpha: .15)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 11
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 7);
