@@ -3,6 +3,7 @@
 import '../../core/theme/app_colors.dart';
 import '../../models/booking_record.dart';
 import '../../models/booking_storage.dart';
+import 'booking_timeline_screen.dart';
 
 class MyBookingsScreen extends StatefulWidget {
   const MyBookingsScreen({super.key});
@@ -36,6 +37,18 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
           'My Bookings',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        actions: [
+          IconButton(
+            tooltip: 'Booking timeline',
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const BookingTimelineScreen(),
+              ),
+            ),
+            icon: const Icon(Icons.timeline_rounded),
+          ),
+        ],
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         elevation: 0,
