@@ -100,9 +100,9 @@ class _WelcomeScreenState extends State<WelcomeScreen>
       height: 30,
       width: 25,
       decoration: BoxDecoration(
-        color: const Color(0xFFDCE7FF),
+        color: const Color(0xFFDCEFE9),
         borderRadius: BorderRadius.circular(5),
-        border: Border.all(color: const Color(0xFFB8CCFF), width: 1.5),
+        border: Border.all(color: const Color(0xFFB8DCD2), width: 1.5),
       ),
       child: const Icon(
         Icons.window_rounded,
@@ -204,7 +204,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
               decoration: BoxDecoration(
                 color: AppColors.surface,
                 borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: const Color(0xFFDCE5FF), width: 2),
+                border: Border.all(color: const Color(0xFFDCEFE9), width: 2),
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.shadow,
@@ -453,7 +453,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
                                   colors: [
-                                    Color(0xFF4775FF),
+                                    Color(0xFF087F75),
                                     AppColors.primary,
                                   ],
                                 ),
