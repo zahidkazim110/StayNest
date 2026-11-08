@@ -34,6 +34,12 @@ class _OwnerHostelsScreenState extends State<OwnerHostelsScreen> {
     if (saved == true) _load();
   }
 
+  Future<void> _edit(OwnerHostel hostel) async {
+    final saved = await Navigator.push<bool>(context,
+      MaterialPageRoute(builder: (_) => AddHostelScreen(existing: hostel)));
+    if (saved == true) _load();
+  }
+
   Future<void> _delete(OwnerHostel hostel) async {
     final confirmed = await showDialog<bool>(context: context, builder: (ctx) =>
       AlertDialog(
@@ -127,7 +133,8 @@ class _OwnerHostelsScreenState extends State<OwnerHostelsScreen> {
 }
 
 class AddHostelScreen extends StatefulWidget {
-  const AddHostelScreen({super.key});
+  final OwnerHostel? existing;
+  const AddHostelScreen({super.key, this.existing});
   @override
   State<AddHostelScreen> createState() => _AddHostelScreenState();
 }
@@ -150,6 +157,23 @@ class _AddHostelScreenState extends State<AddHostelScreen> {
     'Generator backup', 'CCTV security', 'Parking', 'Study room',
     'Attached bathroom', 'Cleaning', 'RO water',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    final hostel = widget.existing;
+    if (hostel != null) {
+      _name.text = hostel.name;
+      _address.text = hostel.address;
+      _description.text = hostel.description;
+      _phone.text = hostel.contactPhone;
+      _maps.text = hostel.googleMapsUrl;
+      _city = hostel.city;
+      _lat = hostel.latitude;
+      _lng = hostel.longitude;
+      _facilities.addAll(hostel.facilities);
+    }
+  }
 
   @override
   void dispose() {
@@ -214,11 +238,12 @@ class _AddHostelScreenState extends State<AddHostelScreen> {
     setState(() => _saving = true);
     try {
       final hostel = OwnerHostel(
-        id: DateTime.now().microsecondsSinceEpoch.toString(),
+        id: widget.existing?.id ?? DateTime.now().microsecondsSinceEpoch.toString(),
         name: _name.text.trim(), address: _address.text.trim(), city: _city,
         description: _description.text.trim(), contactPhone: _phone.text.trim(),
         googleMapsUrl: _maps.text.trim(), latitude: _lat, longitude: _lng,
-        facilities: _facilities, rooms: const [], createdAt: DateTime.now(),
+        facilities: _facilities, rooms: widget.existing?.rooms ?? const [],
+        createdAt: widget.existing?.createdAt ?? DateTime.now(),
       );
       await OwnerHostelStorage.saveHostel(hostel);
       if (!mounted) return;
@@ -236,7 +261,7 @@ class _AddHostelScreenState extends State<AddHostelScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: AppColors.background,
-    appBar: AppBar(title: const Text('Add New Hostel')),
+    appBar: AppBar(title: Text(widget.existing == null ? 'Add New Hostel' : 'Edit Hostel')),
     body: Form(key: _formKey, child: ListView(padding: const EdgeInsets.fromLTRB(20, 10, 20, 32), children: [
       const _FormIntro(icon: Icons.add_business_rounded, title: 'List your property',
         subtitle: 'Give students the details they need to find a safe, comfortable place to stay.'),
@@ -326,7 +351,7 @@ class _AddHostelScreenState extends State<AddHostelScreen> {
       SizedBox(height: 54, child: ElevatedButton(
         onPressed: _saving ? null : _save,
         child: _saving ? const CircularProgressIndicator(color: Colors.white)
-          : const Text('Save hostel listing'))),
+          : Text(widget.existing == null ? 'Save hostel listing' : 'Update hostel listing'))),
       const SizedBox(height: 9),
       const Text('You can add room types, rent and bed availability after saving.',
         textAlign: TextAlign.center, style: TextStyle(fontSize: 11, color: AppColors.textMuted)),
