@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../models/hostel.dart';
@@ -49,7 +50,7 @@ class HostelDetailsScreen extends StatelessWidget {
                 _sectionHeading('About this hostel'),
                 const SizedBox(height: 10),
                 Text(
-                  '${hostel.name} is a student accommodation option located in ${hostel.area}. Explore the available room types and facilities before making your booking.',
+                  hostel.description?.trim().isNotEmpty == true\n                      ? hostel.description!\n                      : '${hostel.name} is a student accommodation option located in ${hostel.area}. Explore the available room types and facilities before making your booking.',
                   style: const TextStyle(
                     fontSize: 14,
                     height: 1.7,
@@ -410,6 +411,35 @@ class HostelDetailsScreen extends StatelessWidget {
                     fontSize: 13,
                   ),
                 ),
+                if (hostel.contactPhone?.isNotEmpty == true) ...[
+                  const SizedBox(height: 7),
+                  Text(
+                    'Owner contact: \${hostel.contactPhone}',
+                    style: const TextStyle(fontSize: 11, color: AppColors.textSecondary),
+                  ),
+                ],
+                if (hostel.availableBeds != null) ...[
+                  const SizedBox(height: 5),
+                  Text(
+                    '\${hostel.availableBeds} beds currently available',
+                    style: const TextStyle(fontSize: 11, color: AppColors.success, fontWeight: FontWeight.w600),
+                  ),
+                ],
+                if (hostel.googleMapsUrl?.isNotEmpty == true) ...[
+                  const SizedBox(height: 10),
+                  OutlinedButton.icon(
+                    onPressed: () async {
+                      await Clipboard.setData(ClipboardData(text: hostel.googleMapsUrl!));
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Google Maps link copied. Paste it into Google Maps to navigate.')),
+                        );
+                      }
+                    },
+                    icon: const Icon(Icons.map_outlined, size: 17),
+                    label: const Text('Copy Google Maps location'),
+                  ),
+                ],
               ],
             ),
           ),
