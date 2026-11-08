@@ -97,9 +97,11 @@ class _OwnerHostelsScreenState extends State<OwnerHostelsScreen> {
                     ])),
                     PopupMenuButton<String>(
                       onSelected: (value) {
+                        if (value == 'edit') _edit(hostel);
                         if (value == 'delete') _delete(hostel);
                       },
                       itemBuilder: (_) => const [
+                        PopupMenuItem(value: 'edit', child: Text('Edit listing')),
                         PopupMenuItem(value: 'delete', child: Text('Delete listing')),
                       ],
                     ),
