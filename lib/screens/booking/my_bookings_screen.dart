@@ -31,7 +31,7 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F8FC),
+      backgroundColor: const Color(0xFFF6F7F3),
       appBar: AppBar(
         title: const Text(
           'My Bookings',
