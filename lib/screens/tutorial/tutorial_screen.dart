@@ -261,7 +261,7 @@ class _TutorialScreenState extends State<TutorialScreen>
                       Text(
                         '0${_pages.length}',
                         style: const TextStyle(
-                          color: Color(0xFF8793B3),
+                          color: Color(0xFF8BA39C),
                           fontSize: 13,
                         ),
                       ),
@@ -326,7 +326,7 @@ class _TutorialScreenState extends State<TutorialScreen>
                   const Text(
                     'MADE FOR STUDENT LIVING',
                     style: TextStyle(
-                      color: Color(0xFF647293),
+                      color: Color(0xFF667875),
                       fontSize: 9,
                       letterSpacing: 2,
                       fontWeight: FontWeight.w700,
@@ -439,7 +439,7 @@ class _TutorialArtwork extends StatelessWidget {
               Container(
                 height: 35,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF1F4FB),
+                  color: const Color(0xFFEDF2EF),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Row(
@@ -484,7 +484,7 @@ class _TutorialArtwork extends StatelessWidget {
               Container(
                 height: 6,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE7E9F4),
+                  color: const Color(0xFFE3EAE5),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Align(
@@ -536,7 +536,7 @@ class _TutorialArtwork extends StatelessWidget {
             child: Stack(
               children: [
                 Container(
-                  color: const Color(0xFFEAF0E9),
+                  color: const Color(0xFFE1F3EF),
                   child: CustomPaint(
                     painter: _MapArtworkPainter(),
                     size: Size.infinite,
@@ -651,7 +651,7 @@ class _TutorialArtwork extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: const Color(0xFFF5F7FC),
+        color: const Color(0xFFF6F7F3),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -685,7 +685,7 @@ class _TutorialArtwork extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: const Color(0xFF202D50),
+        color: const Color(0xFF172B2A),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
         boxShadow: [
@@ -716,7 +716,7 @@ class _ChoiceChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
-        color: selected ? const Color(0xFFE9EEFF) : const Color(0xFFF4F5F8),
+        color: selected ? const Color(0xFFE1F3EF) : const Color(0xFFEDF2EF),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: selected ? _blue : Colors.transparent,
@@ -751,7 +751,7 @@ class _MapArtworkPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     final thinRoad = Paint()
-      ..color = const Color(0xFFD4DED1)
+      ..color = const Color(0xFFB8DCD2)
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
 
