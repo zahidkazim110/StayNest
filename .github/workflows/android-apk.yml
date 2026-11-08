@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feature/play-store-polish
+      - feature/owner-hostel-photos
     tags:
       - "v*"
   workflow_dispatch:
