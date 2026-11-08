@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/hostel.dart';
 import '../../models/hostel_activity_storage.dart';
+import '../../models/owner_hostel.dart';
 import '../hostel_details/hostel_details_screen.dart';
 
 const Color mapBlue = Color(0xFF087F75);
@@ -60,6 +61,59 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
       facilities: {'Wi-Fi', 'Air Conditioning'},
     ),
   ];
+
+  Future<void> _loadOwnerListings() async {
+    final listings = await OwnerHostelStorage.getHostels();
+    if (!mounted) return;
+    final converted = <Hostel>[];
+    for (final listing in listings) {
+      if (listing.rooms.isEmpty) continue;
+      final rent = listing.rooms.map((room) => room.monthlyRent)
+          .reduce((a, b) => a < b ? a : b);
+      final roomTypes = listing.rooms.map((room) => room.roomType).toSet();
+      final availableBeds = listing.rooms.fold<int>(0, (sum, room) => sum + room.availableBeds);
+      final facilities = <String>{};
+      for (final facility in listing.facilities) {
+        final value = facility.toLowerCase();
+        if (value.contains('wi-fi')) {
+          facilities.add('Wi-Fi');
+        } else if (value.contains('air')) {
+          facilities.add('Air Conditioning');
+        } else if (value.contains('laundry')) {
+          facilities.add('Laundry');
+        } else if (value.contains('mess')) {
+          facilities.add('Mess');
+        } else {
+          facilities.add(facility);
+        }
+      }
+      for (final room in listing.rooms) {
+        for (final facility in room.facilities) {
+          if (facility.toLowerCase() == 'wi-fi') facilities.add('Wi-Fi');
+          if (facility.toLowerCase() == 'ac') facilities.add('Air Conditioning');
+        }
+      }
+      converted.add(Hostel(
+        name: listing.name,
+        area: '\${listing.address}, \${listing.city}',
+        monthlyRent: rent,
+        distanceKm: 0,
+        rating: 0,
+        roomTypes: roomTypes,
+        facilities: facilities,
+        googleMapsUrl: listing.googleMapsUrl,
+        contactPhone: listing.contactPhone,
+        description: listing.description,
+        availableBeds: availableBeds,
+        isOwnerListing: true,
+      ));
+    }
+    setState(() {
+      hostels.removeWhere((hostel) => hostel.isOwnerListing);
+      hostels.addAll(converted);
+    });
+  }
+
   List<Hostel> get filteredHostels {
     final results = hostels.where((hostel) {
       final matchesArea = hostel.area.toLowerCase().contains(selectedArea.toLowerCase());
@@ -93,6 +147,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
   @override
   void initState() {
     super.initState();
+    _loadOwnerListings();
 
     radar = AnimationController(
       vsync: this,
