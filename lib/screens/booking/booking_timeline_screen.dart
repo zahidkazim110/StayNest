@@ -28,10 +28,22 @@ class _BookingTimelineScreenState extends State<BookingTimelineScreen> {
       body: FutureBuilder<List<BookingRecord>>(
         future: future,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator(color: AppColors.primary));
-          if (snapshot.hasError) return const Center(child: Text('Unable to load booking history.'));
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.primary),
+            );
+          }
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text('Unable to load booking history.'),
+            );
+          }
           final bookings = snapshot.data ?? [];
-          if (bookings.isEmpty) return const Center(child: Text('Your booking timeline will appear here.'));
+          if (bookings.isEmpty) {
+            return const Center(
+              child: Text('Your booking timeline will appear here.'),
+            );
+          }
           return ListView.builder(
             padding: const EdgeInsets.all(20),
             itemCount: bookings.length,
