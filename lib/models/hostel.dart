@@ -11,6 +11,8 @@ class Hostel {
   final String? description;
   final int? availableBeds;
   final bool isOwnerListing;
+  final Map<String, int>? roomPrices;
+  final Map<String, int>? roomAvailability;
 
   const Hostel({
     required this.name,
@@ -25,6 +27,8 @@ class Hostel {
     this.description,
     this.availableBeds,
     this.isOwnerListing = false,
+    this.roomPrices,
+    this.roomAvailability,
   });
 
   String? operator [](String key) {
