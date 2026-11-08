@@ -104,6 +104,7 @@ class RoleSelectionScreen extends StatelessWidget {
                     'Explore hostels, compare monthly rent and find a stay near your university.',
                 tag: 'FIND A PLACE TO STAY',
                 onTap: () {
+                  debugPrint('[StayNest] Role selected: student');
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
                       builder: (_) => const LoginScreen(selectedRole: UserRole.student),
@@ -119,6 +120,7 @@ class RoleSelectionScreen extends StatelessWidget {
                     'Keep track of your property, room listings and student bookings.',
                 tag: 'MANAGE YOUR PROPERTY',
                 onTap: () {
+                  debugPrint('[StayNest] Role selected: hostelOwner');
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
                       builder: (_) => const LoginScreen(selectedRole: UserRole.hostelOwner),
