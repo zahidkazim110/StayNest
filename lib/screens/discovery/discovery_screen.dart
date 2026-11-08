@@ -27,6 +27,8 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
   int selectedHostel = 0;
   RangeValues budgetRange = const RangeValues(8000, 30000);
   String selectedRoomType = 'Any';
+  String sortBy = 'Recommended';
+  String searchQuery = '';
   Set<String> selectedFacilities = {};
 
   final List<Hostel> hostels = [
@@ -59,23 +61,33 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
     ),
   ];
   List<Hostel> get filteredHostels {
-    return hostels.where((hostel) {
+    final results = hostels.where((hostel) {
+      final matchesArea = hostel.area.toLowerCase().contains(selectedArea.toLowerCase());
       final matchesBudget =
           hostel.monthlyRent >= budgetRange.start &&
           hostel.monthlyRent <= budgetRange.end;
-
       final matchesRoomType =
           selectedRoomType == 'Any' ||
           hostel.roomTypes.contains(selectedRoomType);
-
-      final matchesFacilities =
-          selectedFacilities.isEmpty ||
-          selectedFacilities.every(
-            (facility) => hostel.facilities.contains(facility),
-          );
-
-      return matchesBudget && matchesRoomType && matchesFacilities;
+      final matchesFacilities = selectedFacilities.isEmpty ||
+          selectedFacilities.every((facility) => hostel.facilities.contains(facility));
+      final query = searchQuery.trim().toLowerCase();
+      final matchesSearch = query.isEmpty ||
+          hostel.name.toLowerCase().contains(query) ||
+          hostel.area.toLowerCase().contains(query) ||
+          hostel.facilities.any((facility) => facility.toLowerCase().contains(query));
+      return matchesArea && matchesBudget && matchesRoomType &&
+          matchesFacilities && matchesSearch;
     }).toList();
+
+    if (sortBy == 'Lowest price') {
+      results.sort((a, b) => a.monthlyRent.compareTo(b.monthlyRent));
+    } else if (sortBy == 'Highest rating') {
+      results.sort((a, b) => b.rating.compareTo(a.rating));
+    } else if (sortBy == 'Nearest') {
+      results.sort((a, b) => a.distanceKm.compareTo(b.distanceKm));
+    }
+    return results;
   }
 
   @override
@@ -182,6 +194,8 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
                                 budgetRange = const RangeValues(8000, 30000);
                                 selectedRoomType = 'Any';
                                 selectedFacilities.clear();
+                                searchQuery = '';
+                                sortBy = 'Recommended';
                               });
                             },
                             child: const Text('Reset'),
@@ -189,6 +203,37 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
                         ],
                       ),
 
+                      const SizedBox(height: 16),
+                      TextField(
+                        onChanged: (value) => setModalState(() => searchQuery = value),
+                        decoration: InputDecoration(
+                          hintText: 'Search hostel, area or facility',
+                          prefixIcon: const Icon(Icons.search_rounded, color: mapBlue),
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(13),
+                            borderSide: const BorderSide(color: Color(0xFFE5EAF4)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      const Text('Sort results', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: mapNavy)),
+                      const SizedBox(height: 8),
+                      DropdownButtonFormField<String>(
+                        initialValue: sortBy,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(13)),
+                        ),
+                        items: ['Recommended', 'Lowest price', 'Highest rating', 'Nearest']
+                            .map((item) => DropdownMenuItem(value: item, child: Text(item)))
+                            .toList(),
+                        onChanged: (value) {
+                          if (value != null) setModalState(() => sortBy = value);
+                        },
+                      ),
                       const SizedBox(height: 22),
 
                       const Text(
