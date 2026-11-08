@@ -183,7 +183,7 @@ class HostelCard extends StatelessWidget {
           const Icon(Icons.star_rounded, color: AppColors.gold, size: 15),
           const SizedBox(width: 4),
           Text(
-            rating.toStringAsFixed(1),
+            rating > 0 ? rating.toStringAsFixed(1) : 'New',
             style: const TextStyle(
               color: AppColors.textPrimary,
               fontSize: 12,
