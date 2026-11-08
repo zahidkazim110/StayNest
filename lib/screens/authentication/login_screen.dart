@@ -12,7 +12,7 @@ import 'forgot_password_screen.dart';
 class LoginScreen extends StatefulWidget {
   final UserRole selectedRole;
 
-  const LoginScreen({super.key, this.selectedRole = UserRole.student});
+  const LoginScreen({super.key, required this.selectedRole});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -33,6 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _handleLogin() async {
+    debugPrint('[StayNest] Login submitted for role: ${widget.selectedRole.name}');
     if (!_formKey.currentState!.validate()) return;
 
     try {
@@ -52,13 +53,19 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
 
-      final destination = widget.selectedRole == UserRole.hostelOwner
-          ? const OwnerDashboardScreen()
-          : const HomeScreen();
+      if (widget.selectedRole == UserRole.hostelOwner) {
+        debugPrint('[StayNest] Routing to OwnerDashboardScreen');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const OwnerDashboardScreen()),
+        );
+        return;
+      }
 
+      debugPrint('[StayNest] Routing to HomeScreen');
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => destination),
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
     } catch (e) {
       if (!mounted) return;
@@ -197,8 +204,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      const Text(
-                        'Sign in to StayNest',
+                      Text(
+                        widget.selectedRole == UserRole.hostelOwner
+                            ? 'Hostel Owner Sign In'
+                            : 'Student Sign In',
                         style: TextStyle(
                           color: AppColors.textPrimary,
                           fontSize: 25,
@@ -208,8 +217,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      const Text(
-                        'Continue your search for a place that feels like home.',
+                      Text(
+                        widget.selectedRole == UserRole.hostelOwner
+                            ? 'Sign in to manage your hostel and bookings.'
+                            : 'Continue your search for a place that feels like home.',
                         style: TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 13,
