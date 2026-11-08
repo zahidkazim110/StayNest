@@ -63,7 +63,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
           _card([
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
-              activeColor: AppColors.primary,
+              activeThumbColor: AppColors.primary,
               title: const Text('Notifications'),
               subtitle: const Text('Enable in-app notification preferences'),
               value: notifications,
@@ -75,7 +75,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
             const Divider(),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
-              activeColor: AppColors.primary,
+              activeThumbColor: AppColors.primary,
               title: const Text('Recommendation tips'),
               subtitle: const Text('Show helpful hostel discovery suggestions'),
               value: recommendationTips,
@@ -89,21 +89,27 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
           const Text('Language', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
           const SizedBox(height: 10),
           _card([
-            RadioListTile<String>(
-              contentPadding: EdgeInsets.zero,
-              activeColor: AppColors.primary,
-              title: const Text('English'),
-              value: 'English',
+            RadioGroup<String>(
               groupValue: language,
-              onChanged: (value) => _saveLanguage(value!),
-            ),
-            RadioListTile<String>(
-              contentPadding: EdgeInsets.zero,
-              activeColor: AppColors.primary,
-              title: const Text('Urdu'),
-              value: 'Urdu',
-              groupValue: language,
-              onChanged: (value) => _saveLanguage(value!),
+              onChanged: (value) {
+                if (value != null) {
+                  _saveLanguage(value);
+                }
+              },
+              child: const Column(
+                children: [
+                  RadioListTile<String>(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text('English'),
+                    value: 'English',
+                  ),
+                  RadioListTile<String>(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text('Urdu'),
+                    value: 'Urdu',
+                  ),
+                ],
+              ),
             ),
           ]),
           const SizedBox(height: 22),
