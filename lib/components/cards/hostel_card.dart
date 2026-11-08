@@ -30,7 +30,7 @@ class HostelCard extends StatelessWidget {
         border: Border.all(color: AppColors.border),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x0C172B4D),
+            color: Color(0x14172B2A),
             blurRadius: 22,
             offset: Offset(0, 8),
           ),
@@ -174,7 +174,7 @@ class HostelCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF7E8),
+        color: const Color(0xFFFFF8EC),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -201,7 +201,7 @@ class HostelCard extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFFEAF0FF), Color(0xFFD8E3FF), Color(0xFFBFCFFF)],
+          colors: [Color(0xFFE1F3EF), Color(0xFFB8DCD2), Color(0xFF9BCFC2)],
         ),
       ),
       child: Stack(
