@@ -105,7 +105,7 @@ class HostelDetailsScreen extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF315BE8), Color(0xFF172B62)],
+          colors: [Color(0xFF087F75), Color(0xFF172B2A)],
         ),
       ),
       child: Stack(
