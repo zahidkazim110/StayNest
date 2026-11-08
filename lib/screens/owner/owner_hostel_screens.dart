@@ -312,7 +312,7 @@ class _AddHostelScreenState extends State<AddHostelScreen> {
             decoration: const InputDecoration(hintText: 'Paste Google Maps link or coordinates', prefixIcon: Icon(Icons.map_outlined)),
             validator: (v) {
               if (v == null || v.trim().isEmpty) return 'Add a Google Maps link or use GPS';
-              if (!v.contains('maps.google.') && !v.contains('goo.gl') && !RegExp(r'-?\d{1,2}\.\d+\s*[,/]\s*-?\d{1,3}\.\d+').hasMatch(v)) {
+              if (!v.contains('maps.google.') && !v.contains('google.com/maps') && !v.contains('goo.gl') && !RegExp(r'-?\d{1,2}\.\d+\s*[,/]\s*-?\d{1,3}\.\d+').hasMatch(v)) {
                 return 'Paste a valid Google Maps link or coordinates';
               }
               return null;
