@@ -438,7 +438,7 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
     showAboutDialog(
       context: context,
       applicationName: 'StayNest',
-      applicationVersion: '1.1.3',
+      applicationVersion: '1.1.4',
       applicationIcon: const Icon(
         Icons.home_work_rounded,
         color: AppColors.primary,
