@@ -117,6 +117,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen>
         roomAvailability: roomAvailability,
       ));
     }
+    if (!mounted) return;
     setState(() {
       hostels.removeWhere((hostel) => hostel.isOwnerListing);
       hostels.addAll(converted);
