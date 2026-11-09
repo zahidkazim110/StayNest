@@ -39,7 +39,7 @@ jobs:
       - name: Analyze Flutter project
         run: flutter analyze
 
-      - name: Configure Android release signing
+      - name: Configure Android signing
         shell: bash
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -55,13 +55,11 @@ jobs:
               echo "ANDROID_KEY_ALIAS=$ANDROID_KEY_ALIAS"
               echo "ANDROID_KEY_PASSWORD=$ANDROID_KEY_PASSWORD"
             } >> "$GITHUB_ENV"
-            echo "Release keystore configured."
+            echo "Permanent release keystore configured."
           else
-            if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
-              echo "::error::A permanent Android release keystore is required for version-tag releases."
-              exit 1
-            fi
-            echo "No release keystore configured; building a debug-signed preview APK for CI only."
+            echo "No permanent keystore found; this APK will use the Android debug signing key."
+            echo "This is a TEST BUILD and may not install as an update over previously signed StayNest APKs."
+            echo "STAYNEST_DEBUG_SIGNED=true" >> "$GITHUB_ENV"
           fi
 
       - name: Build release APK
@@ -79,8 +77,14 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          name: StayNest ${{ github.ref_name }}
+          name: StayNest ${{ github.ref_name }} - TEST BUILD
           tag_name: ${{ github.ref_name }}
           prerelease: true
           generate_release_notes: true
+          body: |
+            **TEST BUILD — DEBUG SIGNED**
+
+            This APK was built without a permanent Android release keystore and is signed with the Android debug key.
+            It is intended for testing. It may not install as an update over previously installed StayNest APKs signed with another key.
+            Do not use this build for production distribution.
           files: build/app/outputs/flutter-apk/app-release.apk
