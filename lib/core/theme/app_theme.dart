@@ -19,10 +19,6 @@ class AppTheme {
       ),
     );
 
-    final shape = RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(18),
-    );
-
     return base.copyWith(
       scaffoldBackgroundColor: AppColors.background,
       visualDensity: VisualDensity.standard,
